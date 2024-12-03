@@ -102,13 +102,13 @@ class CalculateGlobalConceptualDFTProperties(PropertyCalculator):
     @job(files="files", settings="settings", properties="properties")
     def make(
         self,
-        neutral_properties: Properties,
-        cation_properties: Properties,
-        anion_properties: Properties,
+        properties_neutral: Properties,
+        properties_cation: Properties,
+        properties_anion: Properties,
     ):
-        neutral_state_energy = neutral_properties["global"]["Total Energy [eV]"]
-        cation_state_energy = cation_properties["global"]["Total Energy [eV]"]
-        anion_state_energy = anion_properties["global"]["Total Energy [eV]"]
+        neutral_state_energy = properties_neutral["global"]["Total Energy [eV]"]
+        cation_state_energy = properties_cation["global"]["Total Energy [eV]"]
+        anion_state_energy = properties_anion["global"]["Total Energy [eV]"]
         vertical_ionization_potential = anion_state_energy - neutral_state_energy
         vertical_eletron_affinity = neutral_state_energy - cation_state_energy
         mulliken_electronegativity = (
@@ -147,18 +147,18 @@ class ConceptualDFTWorkflow(PropertyCalculator):
         self,
         calculator: EnergyCalculation,
         structure: Structure,
-        neutral_properties: Properties = None,
+        properties_neutral: Properties = None,
     ):
         jobs = []
         if calculator.charge is None:
             calculator.charge = rdmolops.GetFormalCharge(structure)
         baseCharge = calculator.charge
-        if neutral_properties is None:
+        if properties_neutral is None:
             calculator.charge = baseCharge
             N = calculator.make(structure=structure)
             jobs.append(N)
-            neutral_properties = N.output["properties"]
-        N_energy = neutral_properties
+            properties_neutral = N.output["properties"]
+        N_energy = properties_neutral
 
         calculator.charge = baseCharge + 1
         Np1 = calculator.make(structure=structure)
@@ -177,5 +177,3 @@ class ConceptualDFTWorkflow(PropertyCalculator):
 
         flow = Flow(jobs, name="CDFT Calculation")
         return Response(replace=flow)
-
-
