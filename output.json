@@ -1,0 +1,862 @@
+{
+	"directed": true,
+	"multigraph": false,
+	"graph": {},
+	"nodes": [
+		{
+			"data": {
+				"settings": {},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "ASE Energy Calculator",
+				"type": "ASEEnergyCalculator"
+			},
+			"name": "ASEEnergyCalculator"
+		},
+		{
+			"data": {
+				"settings": {},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "Energy Calculator",
+				"type": "EnergyCalculation"
+			},
+			"name": "EnergyCalculation"
+		},
+		{
+			"data": {
+				"settings": {
+					"optimizer": {
+						"type": "Literal",
+						"options": ["LBFGS", "BFGS", "FIRE", "FIRE2"],
+						"value": "LBFGS"
+					},
+					"fmax": { "type": "float", "options": null, "value": 0.05 },
+					"steps": { "type": "int", "options": null, "value": 250000 }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "ASE Optimization",
+				"type": "ASEOptimization"
+			},
+			"name": "ASEOptimization"
+		},
+		{
+			"data": {
+				"settings": {},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "Geometry Optimization",
+				"type": "GeometryOptimization"
+			},
+			"name": "GeometryOptimization"
+		},
+		{
+			"data": {
+				"settings": {
+					"charge": { "type": "int", "options": null, "value": null },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"model": { "type": "str", "options": null, "value": "aimnet2" }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "AimNet2 Energy Calculation",
+				"type": "AimNet2EnergyCalculation"
+			},
+			"name": "AimNet2EnergyCalculation"
+		},
+		{
+			"data": {
+				"settings": {
+					"charge": { "type": "int", "options": null, "value": null },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"model": { "type": "str", "options": null, "value": "aimnet2" },
+					"optimizer": {
+						"type": "Literal",
+						"options": ["LBFGS", "BFGS", "FIRE", "FIRE2"],
+						"value": "LBFGS"
+					},
+					"fmax": { "type": "float", "options": null, "value": 0.05 },
+					"steps": { "type": "int", "options": null, "value": 250000 }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "AimNet2 Optimization",
+				"type": "AimNet2Optimization"
+			},
+			"name": "AimNet2Optimization"
+		},
+		{
+			"data": {
+				"settings": {},
+				"inputs": [
+					{ "name": "neutral_properties", "type": "Properties" },
+					{ "name": "cation_properties", "type": "Properties" },
+					{ "name": "anion_properties", "type": "Properties" }
+				],
+				"name": "Calculate Global CDFT Properties",
+				"type": "CalculateGlobalConceptualDFTProperties"
+			},
+			"name": "CalculateGlobalConceptualDFTProperties"
+		},
+		{
+			"data": {
+				"settings": {},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "Property Calculator",
+				"type": "PropertyCalculator"
+			},
+			"name": "PropertyCalculator"
+		},
+		{
+			"data": {
+				"settings": {},
+				"inputs": [
+					{ "name": "calculator", "type": "EnergyCalculation" },
+					{ "name": "structure", "type": "Structure" },
+					{ "name": "neutral_properties", "type": "Properties" }
+				],
+				"name": "Conceptual DFT Workflow",
+				"type": "ConceptualDFTWorkflow"
+			},
+			"name": "ConceptualDFTWorkflow"
+		},
+		{ "name": "Maker" },
+		{
+			"data": {
+				"settings": {
+					"base_name": { "type": "str", "options": null, "value": "ORCA" },
+					"executable": { "type": "str", "options": null, "value": "orca" },
+					"theory": { "type": "str", "options": null, "value": "DFT" },
+					"symmetry": { "type": "bool", "options": null, "value": false },
+					"initial_guess": {
+						"type": "Literal",
+						"options": ["PATOM", "PMODEL", "HUECKEL", "HCORE"],
+						"value": "PATOM"
+					},
+					"grid": {
+						"type": "Literal",
+						"options": ["DEFGRID1", "DEFGRID2", "DEFGRID3"],
+						"value": "DEFGRID2"
+					},
+					"scf_conv": {
+						"type": "Literal",
+						"options": [
+							"NORMALSCF",
+							"LOOSESCF",
+							"SLOPPYSCF",
+							"STRONGSCF",
+							"TIGHTSCF",
+							"VERYTIGHTSCF",
+							"EXTREMESCF"
+						],
+						"value": "NORMALSCF"
+					},
+					"geom_conv": {
+						"type": "Literal",
+						"options": ["LOOSEOPT", "NORMALOPT", "TIGHTOPT", "VERYTIGHTOPT"],
+						"value": "NORMALOPT"
+					},
+					"conv_acc": {
+						"type": "Literal",
+						"options": ["DIIS", "KDIIS", "TRAH", "SOSCF", "DAMP", "LSHIFT"],
+						"value": "SOSCF"
+					},
+					"CPCM": {
+						"type": "Literal",
+						"options": [
+							"1,1,1-trichloroethane",
+							"1,1,2-trichloroethane",
+							"1,2,4-trimethylbenzene",
+							"1,2-dibromoethane",
+							"1,2-dichloroethane",
+							"1,2-ethanediol",
+							"1,4-dioxane",
+							"1-bromo-2-methylpropane",
+							"1-bromooctane",
+							"1-bromopentane",
+							"1-bromopropane",
+							"1-butanol",
+							"1-chlorohexane",
+							"1-chloropentane",
+							"1-chloropropane",
+							"1-decanol",
+							"1-fluorooctane",
+							"1-heptanol",
+							"1-hexanol",
+							"1-hexene",
+							"1-hexyne",
+							"1-iodobutane",
+							"1-iodohexadecane",
+							"1-iodopentane",
+							"1-iodopropane",
+							"1-nitropropane",
+							"1-nonanol",
+							"1-octanol",
+							"1-pentanol",
+							"1-pentene",
+							"1-propanol",
+							"2,2,2-trifluoroethanol",
+							"2,2,4-trimethylpentane",
+							"2,4-dimethylpentane",
+							"2,4-dimethylpyridine",
+							"2,6-dimethylpyridine",
+							"2-bromopropane",
+							"2-butanol",
+							"2-chlorobutane",
+							"2-heptanone",
+							"2-hexanone",
+							"2-methoxyethanol",
+							"2-methyl-1-propanol",
+							"2-methyl-2-propanol",
+							"2-methylpentane",
+							"2-methylpyridine",
+							"2-nitropropane",
+							"2-octanone",
+							"2-pentanone",
+							"2-propanol",
+							"2-propen-1-ol",
+							"e-2-pentene",
+							"3-methylpyridine",
+							"3-pentanone",
+							"4-heptanone",
+							"4-methyl-2-pentanone",
+							"4-methylpyridine",
+							"5-nonanone",
+							"acetic acid",
+							"acetone",
+							"acetonitrile",
+							"acetophenone",
+							"ammonia",
+							"aniline",
+							"anisole",
+							"benzaldehyde",
+							"benzene",
+							"benzonitrile",
+							"benzyl alcohol",
+							"bromobenzene",
+							"bromoethane",
+							"bromoform",
+							"butanal",
+							"butanoic acid",
+							"butanone",
+							"butanonitrile",
+							"butyl ethanoate",
+							"butylamine",
+							"n-butylbenzene",
+							"sec-butylbenzene",
+							"tert-butylbenzene",
+							"carbon disulfide",
+							"carbon tetrachloride",
+							"chlorobenzene",
+							"chloroform",
+							"a-chlorotoluene",
+							"o-chlorotoluene",
+							"conductor",
+							"m-cresol",
+							"o-cresol",
+							"cyclohexane",
+							"cyclohexanone",
+							"cyclopentane",
+							"cyclopentanol",
+							"cyclopentanone",
+							"decalin",
+							"cis-decalin",
+							"n-decane",
+							"dibromomethane",
+							"dibutylether",
+							"o-dichlorobenzene",
+							"e-1,2-dichloroethene",
+							"z-1,2-dichloroethene",
+							"dichloromethane",
+							"diethyl ether",
+							"diethyl sulfide",
+							"diethylamine",
+							"diiodomethane",
+							"diisopropyl ether",
+							"cis-1,2-dimethylcyclohexane",
+							"dimethyl disulfide",
+							"n,n-dimethylacetamide",
+							"n,n-dimethylformamide",
+							"dimethylsulfoxide",
+							"diphenylether",
+							"dipropylamine",
+							"n-dodecane",
+							"ethanethiol",
+							"ethanol",
+							"ethyl acetate",
+							"ethyl methanoate",
+							"ethyl phenyl ether",
+							"ethylbenzene",
+							"fluorobenzene",
+							"formamide",
+							"formic acid",
+							"furan",
+							"n-heptane",
+							"n-hexadecane",
+							"n-hexane",
+							"hexanoic acid",
+							"iodobenzene",
+							"iodoethane",
+							"iodomethane",
+							"isopropylbenzene",
+							"p-isopropyltoluene",
+							"mesitylene",
+							"methanol",
+							"methyl benzoate",
+							"methyl butanoate",
+							"methyl ethanoate",
+							"methyl methanoate",
+							"methyl propanoate",
+							"n-methylaniline",
+							"methylcyclohexane",
+							"n-methylformamide",
+							"nitrobenzene",
+							"nitroethane",
+							"nitromethane",
+							"o-nitrotoluene",
+							"n-nonane",
+							"n-octane",
+							"n-pentadecane",
+							"octanol(wet)",
+							"pentanal",
+							"n-pentane",
+							"pentanoic acid",
+							"pentyl ethanoate",
+							"pentylamine",
+							"perfluorobenzene",
+							"phenol",
+							"propanal",
+							"propanoic acid",
+							"propanonitrile",
+							"propyl ethanoate",
+							"propylamine",
+							"pyridine",
+							"tetrachloroethene",
+							"tetrahydrofuran",
+							"tetrahydrothiophene-s,s-dioxide",
+							"tetralin",
+							"thiophene",
+							"thiophenol",
+							"toluene",
+							"trans-decalin",
+							"tributylphosphate",
+							"trichloroethene",
+							"triethylamine",
+							"n-undecane",
+							"water",
+							"xylene",
+							"m-xylene",
+							"o-xylene",
+							"p-xylene",
+							""
+						],
+						"value": null
+					},
+					"keepdens": { "type": "bool", "options": null, "value": false },
+					"keepints": { "type": "bool", "options": null, "value": false },
+					"density_functional": {
+						"type": "str",
+						"options": null,
+						"value": "B3LYP"
+					},
+					"basis_set": { "type": "str", "options": null, "value": "6-31G" },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"charge": { "type": "int", "options": null, "value": null },
+					"parallel": {
+						"type": "Literal",
+						"options": [
+							"PAL2",
+							"PAL3",
+							"PAL4",
+							"PAL5",
+							"PAL6",
+							"PAL7",
+							"PAL8",
+							"PAL16",
+							"PAL32",
+							"PAL64",
+							""
+						],
+						"value": null
+					},
+					"aim": { "type": "bool", "options": null, "value": false },
+					"runtype": { "type": "str", "options": null, "value": "ENERGY" }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "ORCA Energy Calculation",
+				"type": "ORCAEnergyCalculation"
+			},
+			"name": "ORCAEnergyCalculation"
+		},
+		{
+			"data": {
+				"settings": {
+					"base_name": { "type": "str", "options": null, "value": "ORCA" },
+					"executable": { "type": "str", "options": null, "value": "orca" },
+					"theory": { "type": "str", "options": null, "value": "DFT" },
+					"symmetry": { "type": "bool", "options": null, "value": false },
+					"initial_guess": {
+						"type": "Literal",
+						"options": ["PATOM", "PMODEL", "HUECKEL", "HCORE"],
+						"value": "PATOM"
+					},
+					"grid": {
+						"type": "Literal",
+						"options": ["DEFGRID1", "DEFGRID2", "DEFGRID3"],
+						"value": "DEFGRID2"
+					},
+					"scf_conv": {
+						"type": "Literal",
+						"options": [
+							"NORMALSCF",
+							"LOOSESCF",
+							"SLOPPYSCF",
+							"STRONGSCF",
+							"TIGHTSCF",
+							"VERYTIGHTSCF",
+							"EXTREMESCF"
+						],
+						"value": "NORMALSCF"
+					},
+					"geom_conv": {
+						"type": "Literal",
+						"options": ["LOOSEOPT", "NORMALOPT", "TIGHTOPT", "VERYTIGHTOPT"],
+						"value": "NORMALOPT"
+					},
+					"conv_acc": {
+						"type": "Literal",
+						"options": ["DIIS", "KDIIS", "TRAH", "SOSCF", "DAMP", "LSHIFT"],
+						"value": "SOSCF"
+					},
+					"CPCM": {
+						"type": "Literal",
+						"options": [
+							"1,1,1-trichloroethane",
+							"1,1,2-trichloroethane",
+							"1,2,4-trimethylbenzene",
+							"1,2-dibromoethane",
+							"1,2-dichloroethane",
+							"1,2-ethanediol",
+							"1,4-dioxane",
+							"1-bromo-2-methylpropane",
+							"1-bromooctane",
+							"1-bromopentane",
+							"1-bromopropane",
+							"1-butanol",
+							"1-chlorohexane",
+							"1-chloropentane",
+							"1-chloropropane",
+							"1-decanol",
+							"1-fluorooctane",
+							"1-heptanol",
+							"1-hexanol",
+							"1-hexene",
+							"1-hexyne",
+							"1-iodobutane",
+							"1-iodohexadecane",
+							"1-iodopentane",
+							"1-iodopropane",
+							"1-nitropropane",
+							"1-nonanol",
+							"1-octanol",
+							"1-pentanol",
+							"1-pentene",
+							"1-propanol",
+							"2,2,2-trifluoroethanol",
+							"2,2,4-trimethylpentane",
+							"2,4-dimethylpentane",
+							"2,4-dimethylpyridine",
+							"2,6-dimethylpyridine",
+							"2-bromopropane",
+							"2-butanol",
+							"2-chlorobutane",
+							"2-heptanone",
+							"2-hexanone",
+							"2-methoxyethanol",
+							"2-methyl-1-propanol",
+							"2-methyl-2-propanol",
+							"2-methylpentane",
+							"2-methylpyridine",
+							"2-nitropropane",
+							"2-octanone",
+							"2-pentanone",
+							"2-propanol",
+							"2-propen-1-ol",
+							"e-2-pentene",
+							"3-methylpyridine",
+							"3-pentanone",
+							"4-heptanone",
+							"4-methyl-2-pentanone",
+							"4-methylpyridine",
+							"5-nonanone",
+							"acetic acid",
+							"acetone",
+							"acetonitrile",
+							"acetophenone",
+							"ammonia",
+							"aniline",
+							"anisole",
+							"benzaldehyde",
+							"benzene",
+							"benzonitrile",
+							"benzyl alcohol",
+							"bromobenzene",
+							"bromoethane",
+							"bromoform",
+							"butanal",
+							"butanoic acid",
+							"butanone",
+							"butanonitrile",
+							"butyl ethanoate",
+							"butylamine",
+							"n-butylbenzene",
+							"sec-butylbenzene",
+							"tert-butylbenzene",
+							"carbon disulfide",
+							"carbon tetrachloride",
+							"chlorobenzene",
+							"chloroform",
+							"a-chlorotoluene",
+							"o-chlorotoluene",
+							"conductor",
+							"m-cresol",
+							"o-cresol",
+							"cyclohexane",
+							"cyclohexanone",
+							"cyclopentane",
+							"cyclopentanol",
+							"cyclopentanone",
+							"decalin",
+							"cis-decalin",
+							"n-decane",
+							"dibromomethane",
+							"dibutylether",
+							"o-dichlorobenzene",
+							"e-1,2-dichloroethene",
+							"z-1,2-dichloroethene",
+							"dichloromethane",
+							"diethyl ether",
+							"diethyl sulfide",
+							"diethylamine",
+							"diiodomethane",
+							"diisopropyl ether",
+							"cis-1,2-dimethylcyclohexane",
+							"dimethyl disulfide",
+							"n,n-dimethylacetamide",
+							"n,n-dimethylformamide",
+							"dimethylsulfoxide",
+							"diphenylether",
+							"dipropylamine",
+							"n-dodecane",
+							"ethanethiol",
+							"ethanol",
+							"ethyl acetate",
+							"ethyl methanoate",
+							"ethyl phenyl ether",
+							"ethylbenzene",
+							"fluorobenzene",
+							"formamide",
+							"formic acid",
+							"furan",
+							"n-heptane",
+							"n-hexadecane",
+							"n-hexane",
+							"hexanoic acid",
+							"iodobenzene",
+							"iodoethane",
+							"iodomethane",
+							"isopropylbenzene",
+							"p-isopropyltoluene",
+							"mesitylene",
+							"methanol",
+							"methyl benzoate",
+							"methyl butanoate",
+							"methyl ethanoate",
+							"methyl methanoate",
+							"methyl propanoate",
+							"n-methylaniline",
+							"methylcyclohexane",
+							"n-methylformamide",
+							"nitrobenzene",
+							"nitroethane",
+							"nitromethane",
+							"o-nitrotoluene",
+							"n-nonane",
+							"n-octane",
+							"n-pentadecane",
+							"octanol(wet)",
+							"pentanal",
+							"n-pentane",
+							"pentanoic acid",
+							"pentyl ethanoate",
+							"pentylamine",
+							"perfluorobenzene",
+							"phenol",
+							"propanal",
+							"propanoic acid",
+							"propanonitrile",
+							"propyl ethanoate",
+							"propylamine",
+							"pyridine",
+							"tetrachloroethene",
+							"tetrahydrofuran",
+							"tetrahydrothiophene-s,s-dioxide",
+							"tetralin",
+							"thiophene",
+							"thiophenol",
+							"toluene",
+							"trans-decalin",
+							"tributylphosphate",
+							"trichloroethene",
+							"triethylamine",
+							"n-undecane",
+							"water",
+							"xylene",
+							"m-xylene",
+							"o-xylene",
+							"p-xylene",
+							""
+						],
+						"value": null
+					},
+					"keepdens": { "type": "bool", "options": null, "value": false },
+					"keepints": { "type": "bool", "options": null, "value": false },
+					"density_functional": {
+						"type": "str",
+						"options": null,
+						"value": "B3LYP"
+					},
+					"basis_set": { "type": "str", "options": null, "value": "6-31G" },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"charge": { "type": "int", "options": null, "value": null },
+					"parallel": {
+						"type": "Literal",
+						"options": [
+							"PAL2",
+							"PAL3",
+							"PAL4",
+							"PAL5",
+							"PAL6",
+							"PAL7",
+							"PAL8",
+							"PAL16",
+							"PAL32",
+							"PAL64",
+							""
+						],
+						"value": null
+					},
+					"aim": { "type": "bool", "options": null, "value": false },
+					"runtype": { "type": "Literal", "options": ["OPT"], "value": "OPT" }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "ORCA Optimization",
+				"type": "ORCAOptimization"
+			},
+			"name": "ORCAOptimization"
+		},
+		{
+			"data": {
+				"settings": {
+					"removeSalts": { "type": "bool", "options": null, "value": true }
+				},
+				"inputs": [{ "name": "input", "type": "PubChemCID" }],
+				"name": "PubChem CID Input",
+				"type": "PubChemInput"
+			},
+			"name": "PubChemInput"
+		},
+		{
+			"data": {
+				"settings": {
+					"removeSalts": { "type": "bool", "options": null, "value": true }
+				},
+				"inputs": [{ "name": "input", "type": "Union" }],
+				"name": "Structure Input",
+				"type": "StructureInput"
+			},
+			"name": "StructureInput"
+		},
+		{
+			"data": {
+				"settings": {
+					"mp": { "type": "Union", "options": null, "value": true },
+					"tautomerize": { "type": "bool", "options": null, "value": false }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "QupKake pKa Prediction",
+				"type": "QupKakePrediction"
+			},
+			"name": "QupKakePrediction"
+		},
+		{
+			"data": {
+				"settings": {
+					"checkStructure": { "type": "bool", "options": null, "value": true },
+					"method": {
+						"type": "Literal",
+						"options": ["ETKDGv3", "ETKDGv2", "ETKDGv1", "ETDG"],
+						"value": "ETKDGv3"
+					}
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "RDKit Structure Generation",
+				"type": "RDKitGeneration"
+			},
+			"name": "RDKitGeneration"
+		},
+		{
+			"data": {
+				"settings": {
+					"checkStructure": { "type": "bool", "options": null, "value": true }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "Structure Generation",
+				"type": "StructureGeneration"
+			},
+			"name": "StructureGeneration"
+		},
+		{
+			"data": {
+				"settings": {
+					"removeSalts": { "type": "bool", "options": null, "value": true }
+				},
+				"inputs": [{ "name": "input", "type": "SMARTS" }],
+				"name": "SMARTS Input",
+				"type": "SmartsInput"
+			},
+			"name": "SmartsInput"
+		},
+		{
+			"data": {
+				"settings": {
+					"removeSalts": { "type": "bool", "options": null, "value": true }
+				},
+				"inputs": [{ "name": "smiles", "type": "str" }],
+				"name": "SMILES Input",
+				"type": "SmilesInput"
+			},
+			"name": "SmilesInput"
+		},
+		{
+			"data": {
+				"settings": {
+					"charge": { "type": "int", "options": null, "value": null },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"method": {
+						"type": "Literal",
+						"options": ["GFN1-xTB", "GFN2-xTB"],
+						"value": "GFN2-xTB"
+					},
+					"accuracy": { "type": "float", "options": null, "value": 1.0 },
+					"electronic_temperature": {
+						"type": "float",
+						"options": null,
+						"value": 300.0
+					},
+					"max_iterations": { "type": "int", "options": null, "value": 250 },
+					"initial_guess": {
+						"type": "Literal",
+						"options": ["sad", "eeq"],
+						"value": "sad"
+					},
+					"mixer_damping": { "type": "float", "options": null, "value": 0.4 },
+					"electric_field": { "type": "list", "options": null, "value": null },
+					"spin_polarization": {
+						"type": "float",
+						"options": null,
+						"value": null
+					},
+					"verbosity": { "type": "int", "options": null, "value": 0 }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "TBLite Energy Calculation",
+				"type": "TBLiteEnergyCalculation"
+			},
+			"name": "TBLiteEnergyCalculation"
+		},
+		{
+			"data": {
+				"settings": {
+					"charge": { "type": "int", "options": null, "value": null },
+					"multiplicity": { "type": "int", "options": null, "value": null },
+					"method": {
+						"type": "Literal",
+						"options": ["GFN1-xTB", "GFN2-xTB"],
+						"value": "GFN2-xTB"
+					},
+					"accuracy": { "type": "float", "options": null, "value": 1.0 },
+					"electronic_temperature": {
+						"type": "float",
+						"options": null,
+						"value": 300.0
+					},
+					"max_iterations": { "type": "int", "options": null, "value": 250 },
+					"initial_guess": {
+						"type": "Literal",
+						"options": ["sad", "eeq"],
+						"value": "sad"
+					},
+					"mixer_damping": { "type": "float", "options": null, "value": 0.4 },
+					"electric_field": { "type": "list", "options": null, "value": null },
+					"spin_polarization": {
+						"type": "float",
+						"options": null,
+						"value": null
+					},
+					"verbosity": { "type": "int", "options": null, "value": 0 },
+					"optimizer": {
+						"type": "Literal",
+						"options": ["LBFGS", "BFGS", "FIRE", "FIRE2"],
+						"value": "LBFGS"
+					},
+					"fmax": { "type": "float", "options": null, "value": 0.05 },
+					"steps": { "type": "int", "options": null, "value": 250000 }
+				},
+				"inputs": [{ "name": "structure", "type": "Structure" }],
+				"name": "TBLite Optimization",
+				"type": "TBLiteOptimization"
+			},
+			"name": "TBLiteOptimization"
+		},
+		{
+			"data": {
+				"settings": {
+					"method": {
+						"type": "Literal",
+						"options": ["gfn2", "gfn1", "gfnff"],
+						"value": "gfn2"
+					}
+				},
+				"inputs": [
+					{ "name": "structure1", "type": "Structure" },
+					{ "name": "structure2", "type": "Structure" }
+				],
+				"name": "aISS Docking",
+				"type": "aISSDocking"
+			},
+			"name": "aISSDocking"
+		}
+	],
+	"links": [
+		{ "source": "ASEEnergyCalculator", "target": "AimNet2EnergyCalculation" },
+		{ "source": "ASEEnergyCalculator", "target": "TBLiteEnergyCalculation" },
+		{ "source": "EnergyCalculation", "target": "ASEEnergyCalculator" },
+		{ "source": "EnergyCalculation", "target": "ORCAEnergyCalculation" },
+		{ "source": "ASEOptimization", "target": "AimNet2Optimization" },
+		{ "source": "ASEOptimization", "target": "TBLiteOptimization" },
+		{ "source": "GeometryOptimization", "target": "ASEOptimization" },
+		{ "source": "GeometryOptimization", "target": "ORCAOptimization" },
+		{
+			"source": "PropertyCalculator",
+			"target": "CalculateGlobalConceptualDFTProperties"
+		},
+		{ "source": "PropertyCalculator", "target": "ConceptualDFTWorkflow" },
+		{ "source": "PropertyCalculator", "target": "QupKakePrediction" },
+		{ "source": "PropertyCalculator", "target": "aISSDocking" },
+		{ "source": "Maker", "target": "EnergyCalculation" },
+		{ "source": "Maker", "target": "GeometryOptimization" },
+		{ "source": "Maker", "target": "PropertyCalculator" },
+		{ "source": "Maker", "target": "StructureGeneration" },
+		{ "source": "Maker", "target": "StructureInput" },
+		{ "source": "StructureInput", "target": "PubChemInput" },
+		{ "source": "StructureInput", "target": "SmartsInput" },
+		{ "source": "StructureInput", "target": "SmilesInput" },
+		{ "source": "StructureGeneration", "target": "RDKitGeneration" }
+	]
+}
