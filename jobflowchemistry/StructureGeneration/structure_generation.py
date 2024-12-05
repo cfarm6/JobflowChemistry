@@ -98,7 +98,7 @@ class CRESTProtonation(StructureGeneration):
     freezeopt = None
     finalopt: bool = True
     threads: int = 1
-
+    
     def make_dict(self):
         keys = ["ion", "ewin", "ffopt", "freezeopt", "finalopt"]
         d = {}
@@ -107,7 +107,7 @@ class CRESTProtonation(StructureGeneration):
                 continue
             d[k] = v
         return d
-    
+
     def settings(self):
         return {
             'ion': self.ion,
@@ -118,7 +118,7 @@ class CRESTProtonation(StructureGeneration):
             'finalopt': self.finalopt,
             'threads': self.threads
         }
-    
+
     def properties(self, structure):
         return {}
 
@@ -132,7 +132,8 @@ class CRESTProtonation(StructureGeneration):
         with open("crest.toml", "wb") as f:
             tomli_w.dump(d, f)
         # Run the calculation
-        subprocess.call("crest --input crest.toml > log.out", shell=True)
+        chrg = rdmolops.GetFormalCharge(structure)
+        subprocess.call(f"crest --input crest.toml {chrg} > log.out", shell=True)
         # Parse the output
         if not os.path.exists("protonated.xyz"):
             return Response(stop_children=True)
@@ -143,7 +144,7 @@ class CRESTProtonation(StructureGeneration):
             rdmolfiles.SDMolSupplier("protonated.sdf", sanitize=False, removeHs=False)
         )
         if len(suppl) == 1: suppl = suppl[0]
-            
+
         return suppl
 
 
@@ -165,6 +166,8 @@ class CRESTDeprotonation(
         ]
         if self.ewin is not None:
             commands.append(f"--ewin {self.ewin}")
+        charge = rdmolops.GetFormalCharge(structure)
+        commands.append(f"--chrg {charge}")
         commands.append(" > log.out")
         subprocess.call(" ".join(commands), shell=True)
         if not os.path.exists("deprotonated.sdf"):
