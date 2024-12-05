@@ -149,6 +149,9 @@ class ConceptualDFTWorkflow(PropertyCalculator):
         structure: Structure,
         properties_neutral: Properties = None,
     ):
+        if type(structure) is list:
+            jobs = [self.make(s) for s in structure]
+            return Response(replace=jobs)
         jobs = []
         if calculator.charge is None:
             calculator.charge = rdmolops.GetFormalCharge(structure)

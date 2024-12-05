@@ -28,6 +28,9 @@ class EnergyCalculation(Maker):
 
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
+        if type(structure) is list:
+            jobs = [self.make(s) for s in structure]
+            return Response(replace=jobs)
         properties = self.calculate_energy(structure)
         settings = self.get_settings()
         return Response(

@@ -1,5 +1,10 @@
 from jobflowchemistry.StructureInput import PubChemInput
-from jobflowchemistry.StructureGeneration import RDKitGeneration
+from jobflowchemistry.StructureGeneration import (
+    RDKitGeneration,
+    CRESTProtonation,
+    CRESTDeprotonation,
+    aISSDocking,
+)
 from jobflowchemistry.EnergyCalculation import (
     AimNet2EnergyCalculation,
     ORCAEnergyCalculation,
@@ -37,35 +42,50 @@ orcaopt_maker = ORCAOptimization(
 )
 cdft_calculation = ConceptualDFTWorkflow()
 qupkake_maker = QupKakePrediction(mp=False)
-
+protonation_maker = CRESTProtonation(ion='Na+', ewin = 10.0, threads=20)
+deprotonation_maker = CRESTDeprotonation(ewin = 30.0)
+aISSDocking_maker = aISSDocking(fast = True, ensemble=False)
 # Build workflows
-df = pd.read_csv("examples/cdft_fluorophenols.csv")
-for index, row in df.iterrows():
-    if index != 0: continue
-    input_job = input_maker.make(input=int(row.cid))
-    gen_job = structure_maker.make(structure=input_job.output["structure"])
-    aimnet2opt_job = aimnet2opt_maker.make(structure=gen_job.output["structure"])
-    # orcaenergy_job = orcaenergy_maker.make(structure=aimnet2opt_job.output['structure'])
-    # orcaopt_job = orcaopt_maker.make(structure=aimnet2opt_job.output["structure"])
-    cdft_job = cdft_calculation.make(
-        structure=aimnet2opt_job.output["structure"],
-        neutral_properties=aimnet2opt_job.output["properties"],
-        calculator=aimnet2energy_maker,
-    )
-    qupkake_job = qupkake_maker.make(structure=aimnet2opt_job.output["structure"])
-    #
-    flow = Flow(
-        [
-            input_job,
-            gen_job,
-            # orcaenergy_job,
-            aimnet2opt_job,
-            # orcaopt_job,
-            cdft_job,
-            qupkake_job,
-        ],
-        name=str(int(row.cid)),
-    )
-    fw = flow_to_workflow(flow)
-    lpad = LaunchPad.auto_load()
-    lpad.add_wf(fw)
+# df = pd.read_csv("examples/cdft_fluorophenols.csv")
+# for index, row in df.iterrows():
+# if index != 0: continue
+input_job = input_maker.make(input=75921)
+gen_job = structure_maker.make(structure=input_job.output["structure"])
+aimnet2opt_job = aimnet2opt_maker.make(structure=gen_job.output["structure"])
+# orcaenergy_job = orcaenergy_maker.make(structure=aimnet2opt_job.output['structure'])
+# orcaopt_job = orcaopt_maker.make(structure=aimnet2opt_job.output["structure"])
+# cdft_job = cdft_calculation.make(
+#     structure=aimnet2opt_job.output["structure"],
+#     neutral_properties=aimnet2opt_job.output["properties"],
+#     calculator=aimnet2energy_maker,
+# )
+protonate_job =protonation_maker.make(
+    structure=aimnet2opt_job.output["structure"],
+)
+deprotonate_job = deprotonation_maker.make(
+    structure=aimnet2opt_job.output["structure"],
+)
+docking_job = aISSDocking_maker.make(
+    structure_1=deprotonate_job.output["structure"],
+    structure_2=aimnet2opt_job.output["structure"],
+)
+# qupkake_job = qupkake_maker.make(structure=aimnet2opt_job.output["structure"])
+#
+flow = Flow(
+    [
+        input_job,
+        gen_job,
+        # orcaenergy_job,
+        aimnet2opt_job,
+        # orcaopt_job,
+        # cdft_job,
+        # qupkake_job,
+        protonate_job,
+        deprotonate_job,
+        docking_job,
+    ],
+    name=str(2776882),
+)
+fw = flow_to_workflow(flow)
+lpad = LaunchPad.auto_load()
+lpad.add_wf(fw)
