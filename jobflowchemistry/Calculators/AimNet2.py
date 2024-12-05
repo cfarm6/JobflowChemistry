@@ -25,7 +25,6 @@ class AimNet2Calculator(ASECalculator):
     def get_properties(self, atoms: Atoms):
         energy = atoms.get_total_energy()[0]
         charge = atoms.get_charges()
-
         properties = {
             "global": {"Total Energy [eV]": energy},
             "atomic": {"AimNet2 Partial Charges [e]": charge},

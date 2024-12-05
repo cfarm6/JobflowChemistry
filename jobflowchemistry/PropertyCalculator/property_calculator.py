@@ -27,6 +27,29 @@ class PropertyCalculator(Maker):
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
         # molecule = pickle.loads(molecule)
+        if type(structure) is list:
+            jobs = [self.make(s) for s in structure]
+            return Response(
+                output={
+                    "structure": [x.output["structure"] for x in jobs],
+                    "settings": Settings({}),
+                    "properties": [x.output["properties"] for x in jobs],
+                },
+                addition=jobs,
+            )
+        if structure.GetNumConformers() > 1:
+            jobs = []
+            for confId in range(structure.GetNumConformers()):
+                s = Structure(rdchem.Mol(structure, confId=confId))
+                jobs.append(self.make(s))
+            return Response(
+                output={
+                    "structure": [x.output["structure"] for x in jobs],
+                    "settings": Settings({}),
+                    "properties": [x.output["properties"] for x in jobs],
+                },
+                addition=jobs,
+            )
 
         structure, properties = self.get_properties(structure)
 
