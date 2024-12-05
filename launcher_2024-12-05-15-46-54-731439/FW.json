@@ -1,0 +1,94 @@
+{
+    "spec": {
+        "_add_launchpad_and_fw_id": true,
+        "_tasks": [
+            {
+                "job": {
+                    "@module": "jobflow.core.job",
+                    "@class": "Job",
+                    "@version": "0.1.18",
+                    "function": {
+                        "@module": "jobflowchemistry.EnergyCalculation.energy_calculation",
+                        "@callable": "EnergyCalculation.make",
+                        "@bound": {
+                            "@module": "jobflowchemistry.EnergyCalculation.energy_calculation",
+                            "@class": "AimNet2EnergyCalculation",
+                            "@version": null,
+                            "name": "AimNet2 Energy Calculation",
+                            "charge": null,
+                            "multiplicity": null,
+                            "model": "aimnet2"
+                        }
+                    },
+                    "function_args": [
+                        {
+                            "@module": "jobflowchemistry.Structure",
+                            "@class": "Structure",
+                            "data": "b'\\x80\\x04\\x95\\xe7\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x8c\\x1ajobflowchemistry.Structure\\x94\\x8c\\tStructure\\x94\\x93\\x94B\\xac\\x01\\x00\\x00\\xef\\xbe\\xad\\xde\\x00\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x80\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00(\\x00\\x00\\x00\\x03\\x04\\x01\\x00(\\x00\\x00\\x00\\x01\\x01\\x0b\\x00\\x0b\\x00\\x01\\x0b\\x00\\x02\\x0c\\x00\\x03\\x0c\\x00\\x04\\r\\x00\\x05\\r\\x00\\x06\\x0e\\x00\\x07\\x0e\\x00\\x08\\x0e\\x00\\t\\x0f \\t\\x10\\x00\\n\\x0f(\\x02\\x0b\\x0c\\x00\\x0b\\r\\x00\\x0c\\x0e\\x00\\r\\x0f\\x00B\\x00\\x00\\x00\\x00\\x17\\xd6\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x01\\x02\\x00\\x00\\x00\\x11\\x92\\xcb\\xff\\xbd\\x0c\\x939\\xbf/\\xdd\\x18\\xc0\\xb2.\\xce\\xbe)\\xed\\xe5\\xbf\\x8a\\x1f\\x03\\xbff\\x88\\x8b\\xbf\\xa6\\x9b\\xc4?k+\\xae\\xbf\\\\\\x8f\\x1a\\xc0:#J\\xbe\\x86\\xc9\\x9c\\xbf\\x97\\x90\\xcf?+\\x87v?\\xb8\\xaf\\xa3\\xbf\\x99*\\x08@/\\xdd\\x94\\xbf\"l\\x98\\xbfn4\\xe8\\xbfE\\xd8\\xd0\\xbe:\\x92\\xbb?\\x9b\\xe6\\r\\xbfO\\xaf\\xac?\\x04V\\xa6?\\xfa~*\\xc0&S\\xbd?\\'\\xc2V?}\\xae\\x96?c\\xee\\x82\\xbf\\x9e\\xef\\xc7?\\'\\xc2\"@\\xc3d:?\\xc0[\\x98?H\\xe1\\xfa\\xbd\\xc7\\xba\\x18\\xbf?5\\x86\\xbf\\x00\\x91\\xa6\\xbf\\xed\\r\\xbe>Z\\xf59\\xbf\\xec/\\xab?KYF\\xbe\\xbe\\x9f*\\xbf\\n\\xd7\\xcb\\xbf\\xea\\x952?\\xe1\\x0bC?Nb\\xe0?\\t\\xf9\\xa0\\xbd\\x1c|Q?\\x83\\xc0\\xc2?\\xe5aq\\xbf\\x06\\x81\\x1d@\\x16\\x94\\x85\\x94R\\x94}\\x94\\x85\\x94b.'"
+                        }
+                    ],
+                    "function_kwargs": {},
+                    "output_schema": null,
+                    "uuid": "c29c9933-b527-4159-ad36-f48ff7dcac52",
+                    "index": 1,
+                    "name": "AimNet2 Energy Calculation",
+                    "metadata": {},
+                    "config": {
+                        "@module": "jobflow.core.job",
+                        "@class": "JobConfig",
+                        "@version": "0.1.18",
+                        "resolve_references": true,
+                        "on_missing_references": "error",
+                        "manager_config": {},
+                        "expose_store": false,
+                        "pass_manager_config": true,
+                        "response_manager_config": {}
+                    },
+                    "hosts": [
+                        "12715cdf-e634-4173-a4d6-a84ae18317ad",
+                        "b542bb77-400e-40c5-bfe7-73049fc46675",
+                        "9ae4ce2e-c4d9-4af1-97fd-31e3fee103ca"
+                    ],
+                    "metadata_updates": [],
+                    "config_updates": [],
+                    "name_updates": [],
+                    "files": "files",
+                    "settings": "settings",
+                    "properties": "properties"
+                },
+                "store": null,
+                "_fw_name": "{{jobflow.managers.fireworks.JobFiretask}}"
+            }
+        ]
+    },
+    "fw_id": 974,
+    "created_on": "2024-12-05T15:46:50.409364",
+    "updated_on": "2024-12-05T15:46:54.741107",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 974,
+            "launch_dir": "/home/carson/Liberty University Dropbox/Carson Farmer/research/Software/JobflowChemistry/launcher_2024-12-05-15-46-54-731439",
+            "host": "computer",
+            "ip": "127.0.1.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2024-12-05T15:46:54.739804",
+                    "updated_on": "2024-12-05T15:46:54.739813"
+                }
+            ],
+            "launch_id": 956
+        }
+    ],
+    "state": "RUNNING",
+    "name": "AimNet2 Energy Calculation"
+}

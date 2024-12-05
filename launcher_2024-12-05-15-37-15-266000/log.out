@@ -1,0 +1,513 @@
+
+       ╔════════════════════════════════════════════╗
+       ║            ___ ___ ___ ___ _____           ║
+       ║           / __| _ \ __/ __|_   _|          ║
+       ║          | (__|   / _|\__ \ | |            ║
+       ║           \___|_|_\___|___/ |_|            ║
+       ║                                            ║
+       ║  Conformer-Rotamer Ensemble Sampling Tool  ║
+       ║          based on the xTB methods          ║
+       ║                                            ║
+       ╚════════════════════════════════════════════╝
+       Version 3.0.2, Thu, 29 August 14:20:46, 08/29/2024
+       commit (65685a7) compiled by 'usr@d37571da525e'
+
+   Cite work conducted with this code as
+
+   • P.Pracht, F.Bohle, S.Grimme, PCCP, 2020, 22, 7169-7192.
+   • S.Grimme, JCTC, 2019, 15, 2847-2862.
+   • P.Pracht, S.Grimme, C.Bannwarth, F.Bohle, S.Ehlert,
+     G.Feldmann, J.Gorges, M.Müller, T.Neudecker, C.Plett,
+     S.Spicher, P.Steinbach, P.Wesołowski, F.Zeller,
+     J. Chem. Phys., 2024, 160, 114110.
+
+   for works involving QCG cite
+
+   • S.Spicher, C.Plett, P.Pracht, A.Hansen, S.Grimme,
+     JCTC, 2022, 18 (5), 3174-3189.
+   • C.Plett, S. Grimme,
+     Angew. Chem. Int. Ed. 2023, 62, e202214477.
+
+   for works involving MECP screening cite
+
+   • P.Pracht, C.Bannwarth, JCTC, 2022, 18 (10), 6370-6385.
+
+   Original code
+     P.Pracht, S.Grimme, Universität Bonn, MCTC
+   with help from (alphabetical order):
+     C.Bannwarth, F.Bohle, S.Ehlert, G.Feldmann, J.Gorges,
+     S.Grimme, C.Plett, P.Pracht, S.Spicher, P.Steinbach,
+     P.Wesolowski, F.Zeller
+
+   Online documentation is available at
+   https://crest-lab.github.io/crest-docs/
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Lesser General Public License (LGPL) for more details.
+
+ Command line input:
+ $ crest --input crest.toml
+
+ reading crest.toml
+********************************************************************************
+* INPUT FILE crest.toml content (without comments):
+********************************************************************************
+* threads = 20
+* runtype = "protonate"
+* input = "input.xyz"
+* [protonation]
+* ion = "Na+"
+* ewin = 10.0000000000
+* ffopt = true
+* finalopt = true
+********************************************************************************
+  -swel : using Na-atom with charge 1 instead of H⁺
+
+> Setting up backup calculator ... done.
+ ----------------
+ Calculation info
+ ----------------
+> User-defined calculation level:
+ : xTB calculation via tblite lib
+ : GFN2-xTB level
+ :   Molecular charge    : 0
+ :   Fermi temperature   : 300.00000
+ :   Accuracy            : 1.00000
+ :   max SCC cycles      : 500
+
+
+ -----------------------------
+ Initial Geometry Optimization
+ -----------------------------
+ Geometry successfully optimized.
+
+                  _                    _        
+  _ __  _ __ ___ | |_ ___  _ __   __ _| |_ ___  
+ | '_ \| '__/ _ \| __/ _ \| '_ \ / _` | __/ _ \ 
+ | |_) | | | (_) | || (_) | | | | (_| | ||  __/ 
+ | .__/|_|  \___/ \__\___/|_| |_|\__,_|\__\___| 
+ |_|                                            
+ -----------------------------------------------
+   automated protonation site screening script  
+        revised version (c) P.Pracht 2024       
+ Cite as:
+   P.Pracht, C.A.Bauer, S.Grimme
+   JCC, 2017, 38, 2618–2631.
+
+ =============================
+  # threads =          20
+ =============================
+
+ Input structure:
+  17
+
+ F         -0.9178170638       -1.8683614456        0.1528277453
+ F         -0.3958432969       -0.4387492094        1.6830078009
+ F          1.7454377679       -1.6756281301        0.6617771129
+ F          1.1968087504       -1.1701275878       -1.3689979678
+ F         -0.8150704413        1.6392977330        0.0790097572
+ F         -0.9950507853        0.3877317287       -1.6810354251
+ F          1.6168223067        1.4306069217       -0.9383390336
+ F          3.2415559656        0.3233408804       -0.0775283079
+ F          1.7352667528        1.1702701711        1.1990313363
+ O         -3.0293978792        0.7622989506        1.0994197688
+ O         -3.4479602026       -0.4075300672       -0.7757007025
+ C         -0.3561390175       -0.6619799589        0.3559282075
+ C          1.1335735648       -0.7469308749       -0.0967531756
+ C         -1.2121147640        0.4262586669       -0.3562285914
+ C          1.9440626432        0.5802388263        0.0266556737
+ C         -2.7310098375        0.2001794946       -0.0500548923
+ H         -3.9659729259        0.6538875867        1.3360654581
+
+--------------------------------------------------------------------------------
+
+> Setting up GFN0-xTB for LMO center calculation ... done.
+> Performing singlepoint calculation ... 
+ dipole moment from electron density (au)
+     X       Y       Z   
+  -0.7562   0.6219   1.1157  total (Debye):    3.773
+ doing rotations ...
+ doing transformations ...
+  LMO type  Fii/eV   ncent   charge center         contributions...
+    1 sigma -459.85   1.75   3.26317   2.11002  -1.12045    7  F :  0.69   15  C :  0.32
+    2 sigma -459.77   1.75   5.23647   0.76378  -0.07740    8  F :  0.69   15  C :  0.31
+    3 sigma -459.58   1.75   3.40780   1.79462   1.47085    9  F :  0.69   15  C :  0.32
+    4 sigma -458.29   1.76   2.20755  -1.90679  -1.71842    4  F :  0.68   13  C :  0.32
+    5 sigma -458.16   1.75  -1.34494  -2.70442   0.40803    1  F :  0.69   12  C :  0.31
+    6 sigma -457.88   1.76  -2.04085   0.74273  -2.26654    6  F :  0.68   14  C :  0.32
+    7 sigma -457.39   1.76  -0.71136  -0.96492   2.26750    2  F :  0.68   12  C :  0.32
+    8 sigma -457.31   1.76  -1.82304   2.26130  -0.13322    5  F :  0.68   14  C :  0.32
+    9 sigma -457.31   1.76   2.87132  -2.52351   0.74661    3  F :  0.69   13  C :  0.31
+   10 sigma -454.43   1.98  -6.77001   1.31399   2.33419   10  O :  0.55   17  H :  0.44
+   11 pi    -411.92   1.84  -5.92946  -0.75681  -0.77518   11  O :  0.65   16  C :  0.35
+   12 pi    -411.74   1.84  -6.14417   0.01391  -1.21201   11  O :  0.65   16  C :  0.34
+   13 pi    -394.43   1.67  -5.66446   1.48442   1.26852   10  O :  0.72   16  C :  0.27
+   14 pi    -393.21   1.64  -5.48271   0.79171   1.67446   10  O :  0.73   16  C :  0.26
+   15 LP    -393.03   0.99  -1.28293   2.06387  -3.54955    6  F :  1.01
+   16 sigma -391.53   2.02  -1.49781  -0.22172  -0.01446   14  C :  0.50   12  C :  0.50
+   17 sigma -390.92   2.00   0.73033  -1.28024   0.22530   13  C :  0.50   12  C :  0.50
+   18 sigma -390.90   1.99   2.86601  -0.16312  -0.05842   13  C :  0.51   15  C :  0.50
+   19 sigma -389.66   2.01  -3.69484   0.60028  -0.38501   14  C :  0.52   16  C :  0.48
+   20 LP    -389.26   1.01  -0.91262  -0.38605  -3.49112    6  F :  1.00
+   21 LP    -388.06   1.01   0.86141  -2.39372  -3.13565    4  F :  0.99
+   22 LP    -387.89   1.01  -2.70720   3.82500   0.79017    5  F :  0.99
+   23 LP    -387.61   1.02   4.61006   2.32630   2.95799    9  F :  0.99
+   24 LP    -387.39   1.02   6.64540   1.38743  -1.32402    8  F :  0.99
+   25 LP    -387.34   1.02  -2.93499  -3.38514  -0.62256    1  F :  0.99
+   26 LP    -387.19   1.02   6.36424  -0.86604  -0.34637    8  F :  0.99
+   27 LP    -387.14   1.02   3.02240  -1.20071  -3.41899    4  F :  0.99
+   28 LP    -387.12   1.02   2.31574  -3.74604   2.24779    3  F :  0.99
+   29 LP    -387.03   1.02   4.46656  -2.53163   1.97558    3  F :  0.99
+   30 LP    -386.77   1.02   0.65216  -0.58699   3.70325    2  F :  0.99
+   31 LP    -386.65   1.02  -3.19056   0.51830  -3.90785    6  F :  0.99
+   32 LP    -386.57   1.03   2.56272   3.96464  -1.12118    7  F :  0.99
+   33 LP    -386.56   1.02  -0.71980  -4.47469  -0.32566    1  F :  0.99
+   34 LP    -386.55   1.03  -1.33879  -2.06710   3.80518    2  F :  0.99
+   35 LP    -386.54   1.02   2.31886   1.40337   3.10660    9  F :  0.99
+   36 LP    -386.50   1.02   1.98136   2.11778  -2.65848    7  F :  0.99
+   37 LP    -386.35   1.02  -1.62872   0.36987   3.46178    2  F :  0.99
+   38 LP    -386.32   1.02  -0.41702   2.92489   1.15022    5  F :  0.99
+   39 LP    -386.19   1.03  -2.16395  -4.03111   1.64132    1  F :  0.99
+   40 LP    -386.18   1.03   6.78119   1.07762   1.12292    8  F :  0.99
+   41 LP    -386.15   1.03   3.78291  -4.24039   0.31138    3  F :  0.99
+   42 LP    -386.12   1.03  -1.05142   3.85485  -1.06047    5  F :  0.99
+   43 LP    -386.07   1.03   4.29969   2.97581  -2.57215    7  F :  0.99
+   44 LP    -386.01   1.03   2.71077   3.57525   1.99235    9  F :  0.99
+   45 LP    -386.00   1.03   2.99088  -3.52845  -2.56635    4  F :  0.99
+   46 LP    -385.66   1.02  -4.65435   2.23379   2.95272   10  O :  0.99
+   47 LP    -382.13   1.06  -5.88453  -1.28713  -2.69635   11  O :  0.97
+   48 LP    -376.41   1.08  -7.87428  -0.79132  -0.82599   11  O :  0.96
+ starting deloc pi regularization ...
+ ncent threshold   2.20 --> # pi deloc LMO 3
+> done.
+> Total wall time for calculations
+ * wall-time:     0 d,  0 h,  0 min,  0.078 sec
+ *  cpu-time:     0 d,  0 h,  0 min,  0.089 sec
+ * ratio c/w:     1.143 speedup
+--------------------------------------------------------------------------------
+
+> 34 π- or LP-centers identified as protonation candidates:
+   LMO type     center(xyz/Ang)
+     1 π        -3.13773    -0.40048    -0.41021
+     2 π        -3.25135     0.00736    -0.64137
+     3 π        -2.99750     0.78552     0.67127
+     4 π        -2.90133     0.41895     0.88609
+     5 LP       -0.67890     1.09215    -1.87834
+     6 LP       -0.48294    -0.20429    -1.84742
+     7 LP        0.45584    -1.26670    -1.65931
+     8 LP       -1.43259     2.02410     0.41814
+     9 LP        2.43954     1.23103     1.56530
+    10 LP        3.51660     0.73420    -0.70064
+    11 LP       -1.55313    -1.79134    -0.32945
+    12 LP        3.36781    -0.45829    -0.18329
+    13 LP        1.59938    -0.63539    -1.80925
+    14 LP        1.22544    -1.98232     1.18948
+    15 LP        2.36360    -1.33968     1.04543
+    16 LP        0.34511    -0.31062     1.95968
+    17 LP       -1.68837     0.27427    -2.06795
+    18 LP        1.35613     2.09800    -0.59330
+    19 LP       -0.38090    -2.36790    -0.17233
+    20 LP       -0.70846    -1.09386     2.01361
+    21 LP        1.22709     0.74263     1.64394
+    22 LP        1.04849     1.12068    -1.40681
+    23 LP       -0.86188     0.19572     1.83189
+    24 LP       -0.22068     1.54779     0.60867
+    25 LP       -1.14511    -2.13317     0.86855
+    26 LP        3.58845     0.57025     0.59423
+    27 LP        2.00183    -2.24392     0.16477
+    28 LP       -0.55639     2.03990    -0.56117
+    29 LP        2.27530     1.57473    -1.36113
+    30 LP        1.43448     1.89194     1.05430
+    31 LP        1.58271    -1.86718    -1.35805
+    32 LP       -2.46298     1.18207     1.56251
+    33 LP       -3.11396    -0.68112    -1.42685
+    34 LP       -4.16689    -0.41875    -0.43709
+> Generating candidate structures ... 
+> Up to 34 new structures
+> Increasing the molecular charge by 1
+> Write protonate_0.xyz with 34 candidates ... 
+> done.
+
+ -------------------------------------
+ Protomer Ensemble FF Pre-Optimization
+ -------------------------------------
+> LMO centers can be very close to atoms, leading to initial
+  extremely high-energy candidates which may undergo unwanted
+  chemical changes in optimizations. Classical force-fields
+  with defined bond-topology can help circumvent this issue.
+> Setting up force-field structure pre-optimization ...
+ ----------------
+ Calculation info
+ ----------------
+> User-defined calculation level:
+ : GFN-FF calculation via GFNFF lib
+ :   Molecular charge    : 1
+
+ Optimization engine: ANCOPT
+ Hessian update type: BFGS
+ E/G convergence criteria:  0.500E-05 Eh, 0.100E-02 Eh/a0
+ maximum optimization steps: 10000
+> 34 structures to optimize ...
+ |>2.9% |>11.8% |>20.6% |>32.4% |>41.2% |>50.0% |>61.8% |>70.6% |>82.4% |>91.2% |>100.0%
+ done.
+> 34 of 34 structures successfully optimized (100.0% success)
+> Total runtime for 34 optimizations:
+ * wall-time:     0 d,  0 h,  0 min,  0.531 sec
+ *  cpu-time:     0 d,  0 h,  0 min, 10.564 sec
+ * ratio c/w:    19.903 speedup
+> Corresponding to approximately 0.016 sec per processed structure
+> Write protonate_1.xyz with optimized structures ... 
+> Sorting structures by energy to remove failed opts. ...
+ input  file name : protonate_1.xyz
+ output file name : protonate_1.xyz.sorted
+ sorting energy window (EWIN)   : 1000.0000 / kcal*mol⁻¹
+ reference state Etot           :  -1.0235641700000000     
+
+=====================================================
+============== ordered structure list ===============
+=====================================================
+ written to file <protonate_1.xyz.sorted>
+
+ structure      ΔE(kcal/mol)                 Etot(Eh)
+         1            0.0000            -1.0235641700
+         2            0.4127            -1.0229064300
+         3           12.9716            -1.0028926000
+         4           32.0583            -0.9724760600
+         5           37.6603            -0.9635486700
+         6           37.6644            -0.9635421500
+         7           37.7859            -0.9633485000
+         8           37.8006            -0.9633250900
+         9           37.9517            -0.9630842900
+        10           38.7413            -0.9618259100
+        11           38.7508            -0.9618108100
+        12           41.3509            -0.9576673600
+        13           59.2048            -0.9292152900
+        14           59.5258            -0.9287037000
+        15           70.9519            -0.9104951900
+        16           73.7159            -0.9060903500
+        17           73.9104            -0.9057803900
+        18           76.3859            -0.9018355300
+        19           81.3610            -0.8939072200
+        20           89.1927            -0.8814265700
+        21           93.0839            -0.8752255400
+        22           97.9772            -0.8674276400
+        23           97.9773            -0.8674274300
+        24           98.7222            -0.8662403100
+        25           98.7256            -0.8662348400
+        26          106.3253            -0.8541240000
+        27          106.5328            -0.8537933600
+        28          107.2480            -0.8526535400
+        29          108.1879            -0.8511558000
+        30          108.6889            -0.8503574500
+        31          117.2704            -0.8366819200
+        32          118.6911            -0.8344178200
+        33          173.9777            -0.7463131000
+        34          174.7597            -0.7450668500
+
+> Sorted file was renamed to protonate_1.xyz
+> WARNING: These are force-field energies which are 
+           NOT(!) accurate for bond formation and breaking!
+
+ ------------------------------------------
+ Protomer Ensemble Frozen-Atom Optimization
+ ------------------------------------------
+> Setting up frozen structure optimization ...
+> 16 frozen atoms. All H non-frozen.
+ ----------------
+ Calculation info
+ ----------------
+> User-defined calculation level:
+ : xTB calculation via tblite lib
+ : GFN2-xTB level
+ :   Molecular charge    : 1
+ :   Fermi temperature   : 300.00000
+ :   Accuracy            : 1.00000
+ :   max SCC cycles      : 500
+
+> 34 structures to optimize ...
+ |>2.9% |>11.8% |>20.6% |>32.4% |>41.2% |>50.0% |>61.8% |>70.6% |>82.4% |>91.2% |>100.0%
+ done.
+> 34 of 34 structures successfully optimized (100.0% success)
+> Total runtime for 34 optimizations:
+ * wall-time:     0 d,  0 h,  0 min,  1.420 sec
+ *  cpu-time:     0 d,  0 h,  0 min, 28.366 sec
+ * ratio c/w:    19.973 speedup
+> Corresponding to approximately 0.042 sec per processed structure
+> Write protonate_2.xyz with optimized structures ... 
+> Sorting structures by energy to remove failed opts. ...
+ input  file name : protonate_2.xyz
+ output file name : protonate_2.xyz.sorted
+ sorting energy window (EWIN)   :   50.0000 / kcal*mol⁻¹
+ number of removed by energy    :   1
+ number of remaining points     :   33
+ reference state Etot           :  -61.746661410000002     
+
+=====================================================
+============== ordered structure list ===============
+=====================================================
+ written to file <protonate_2.xyz.sorted>
+
+ structure      ΔE(kcal/mol)                 Etot(Eh)
+         1            0.0000           -61.7466614100
+         2            7.6436           -61.7344805000
+         3            9.7650           -61.7310999000
+         4           11.2124           -61.7287932700
+         5           12.8253           -61.7262229800
+         6           13.3768           -61.7253441700
+         7           13.7305           -61.7247805300
+         8           14.4015           -61.7237111100
+         9           14.4853           -61.7235776400
+        10           16.2018           -61.7208422200
+        11           16.2623           -61.7207458500
+        12           18.8112           -61.7166838500
+        13           19.1828           -61.7160917400
+        14           20.2944           -61.7143202400
+        15           20.5942           -61.7138424200
+        16           20.6095           -61.7138181500
+        17           21.3891           -61.7125757700
+        18           21.9166           -61.7117350800
+        19           22.0218           -61.7115674700
+        20           22.1900           -61.7112993200
+        21           22.5050           -61.7107973300
+        22           22.8266           -61.7102848400
+        23           24.5077           -61.7076059600
+        24           25.3573           -61.7062519300
+        25           25.4361           -61.7061263800
+        26           25.4849           -61.7060487000
+        27           25.6624           -61.7057657600
+        28           25.6629           -61.7057650000
+        29           25.9058           -61.7053779500
+        30           25.9658           -61.7052822000
+        31           27.1553           -61.7033866400
+        32           28.2729           -61.7016056700
+        33           32.6874           -61.6945707400
+
+> Sorted file was renamed to protonate_2.xyz
+
+ ------------------------------------
+ Final Protomer Ensemble Optimization
+ ------------------------------------
+ ----------------
+ Calculation info
+ ----------------
+> User-defined calculation level:
+ : xTB calculation via tblite lib
+ : GFN2-xTB level
+ :   Molecular charge    : 1
+ :   Fermi temperature   : 300.00000
+ :   Accuracy            : 1.00000
+ :   max SCC cycles      : 500
+
+ Optimization engine: ANCOPT
+ Hessian update type: BFGS
+ E/G convergence criteria:  0.100E-06 Eh, 0.200E-03 Eh/a0
+ maximum optimization steps: 200
+> 33 structures to optimize ...
+ |>3.0% |>12.1% |>21.2% |>30.3% |>42.4% |>51.5% |>60.6% |>72.7% |>81.8% |>90.9% |>100.0%
+ done.
+> 33 of 33 structures successfully optimized (100.0% success)
+> Total runtime for 33 optimizations:
+ * wall-time:     0 d,  0 h,  0 min,  7.900 sec
+ *  cpu-time:     0 d,  0 h,  2 min, 37.497 sec
+ * ratio c/w:    19.935 speedup
+> Corresponding to approximately 0.239 sec per processed structure
+> Write protonate_3.xyz with optimized structures ... 
+> Sorting structures by energy ...
+ input  file name : protonate_3.xyz
+ output file name : protonate_3.xyz.sorted
+ sorting energy window (EWIN)   :   30.0000 / kcal*mol⁻¹
+ reference state Etot           :  -61.770030880000000     
+
+=====================================================
+============== ordered structure list ===============
+=====================================================
+ written to file <protonate_3.xyz.sorted>
+
+ structure      ΔE(kcal/mol)                 Etot(Eh)
+         1            0.0000           -61.7700308800
+         2            0.0028           -61.7700263500
+         3            0.8310           -61.7687066500
+         4            0.8630           -61.7686556400
+         5            0.8862           -61.7686186600
+         6            0.8876           -61.7686164400
+         7            1.0909           -61.7682924500
+         8            1.0928           -61.7682893500
+         9            1.0953           -61.7682853800
+        10            1.1479           -61.7682016000
+        11            2.5705           -61.7659344800
+        12            3.9717           -61.7637015600
+        13            4.4962           -61.7628657400
+        14            4.4965           -61.7628652900
+        15            4.5012           -61.7628577700
+        16            5.1477           -61.7618275200
+        17            6.5592           -61.7595781100
+        18            6.7109           -61.7593364400
+        19            7.9623           -61.7573421800
+        20            8.2421           -61.7568963000
+        21            8.5881           -61.7563448000
+        22            8.5909           -61.7563403900
+        23            8.7854           -61.7560304700
+        24            8.8122           -61.7559878000
+        25            8.8852           -61.7558714600
+        26            8.8869           -61.7558687200
+        27            9.6770           -61.7546096100
+        28           11.9466           -61.7509928200
+        29           12.1330           -61.7506957200
+        30           12.1422           -61.7506811200
+        31           12.5308           -61.7500617700
+        32           13.9608           -61.7477828900
+        33           14.0294           -61.7476736400
+
+ ---------------------------------------------
+ Remove duplicates via canonical atom identity
+ ---------------------------------------------
+> Setting up canonical atom order for 33 structures via CN-based molecular graphs ...
+ |>3.0% |>12.1% |>21.2% |>30.3% |>42.4% |>51.5% |>60.6% |>72.7% |>81.8% |>90.9% |>100.0%
+ done.
+> 10 groups identified based on canonical atom identifier algorithm
+> 8 structures discared due to fragment change (!=1)
+ input  file name : unique.xyz
+ output file name : unique.xyz.sorted
+ sorting energy window (EWIN)   :   30.0000 / kcal*mol⁻¹
+ reference state Etot           :  -61.770030880000000     
+
+=====================================================
+============== ordered structure list ===============
+=====================================================
+ written to file <unique.xyz.sorted>
+
+ structure      ΔE(kcal/mol)                 Etot(Eh)
+         1            0.0000           -61.7700308800
+         2            0.8310           -61.7687066500
+         3            0.8862           -61.7686186600
+         4            1.0909           -61.7682924500
+         5            6.7109           -61.7593364400
+         6            8.5881           -61.7563448000
+         7            8.7854           -61.7560304700
+         8            8.8122           -61.7559878000
+         9           12.1330           -61.7506957200
+
+> Sorted file was renamed to protonated.xyz
+> All other temporary protonate_*.xyz files are removed by default.
+
+ -----------------
+ Wall Time Summary
+ -----------------
+ CREST runtime (total)                   0 d,  0 h,  0 min, 10.416 sec
+ ----------------------------------------------------------------------
+ LMO center calculation         ...        0 min,  0.078 sec (  0.746%)
+ Ensemble optimization (FF)     ...        0 min,  0.532 sec (  5.103%)
+ Ensemble optimization (frozen) ...        0 min,  1.421 sec ( 13.645%)
+ Ensemble refinement            ...        0 min,  0.016 sec (  0.152%)
+ Ensemble optimization          ...        0 min,  7.902 sec ( 75.858%)
+ I/O and setup                  ...        0 min,  0.468 sec (  4.496%)
+ ----------------------------------------------------------------------
+ * wall-time:     0 d,  0 h,  0 min, 10.416 sec
+ *  cpu-time:     0 d,  0 h,  3 min, 17.529 sec
+ * ratio c/w:    18.963 speedup
+ ----------------------------------------------------------------------
+ * Total number of energy+grad calls: 3487
+
+ CREST terminated normally.

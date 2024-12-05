@@ -1,0 +1,124 @@
+{
+    "spec": {
+        "_add_launchpad_and_fw_id": true,
+        "_tasks": [
+            {
+                "job": {
+                    "@module": "jobflow.core.job",
+                    "@class": "Job",
+                    "@version": "0.1.18",
+                    "function": {
+                        "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                        "@callable": "ConformerGeneration.make",
+                        "@bound": {
+                            "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                            "@class": "rdKitConformers",
+                            "@version": null,
+                            "name": "rdKit Conformers",
+                            "method": "ETKDGv3",
+                            "numConfs": 2,
+                            "boundsMatForceScaling": null,
+                            "boxSizeMult": null,
+                            "clearConfs": null,
+                            "embedFragmentsSeparately": null,
+                            "enableSequentialRandomSeeds": null,
+                            "enforceChirality": null,
+                            "forceTransAmides": null,
+                            "ignoreSmoothingFailures": null,
+                            "maxIterations": null,
+                            "numThreads": 1,
+                            "numZeroFail": null,
+                            "onlyHeavyAtomsForRMS": null,
+                            "optimizerForceTol": null,
+                            "pruneRmsThresh": null,
+                            "randNegEig": null,
+                            "randomSeed": null,
+                            "symmetrizeConjugatedTerminalGroupsForPruning": null,
+                            "trackFailures": null,
+                            "useBasicKnowledge": null,
+                            "useExpTorsionAnglePrefs": null,
+                            "useMacrocycle14config": null,
+                            "useMacrocycleTorsions": null,
+                            "useRandomCoords": null,
+                            "useSmallRingTorsions": null,
+                            "useSymmetryForPruning": null
+                        }
+                    },
+                    "function_args": [],
+                    "function_kwargs": {
+                        "structure": {
+                            "@module": "jobflow.core.reference",
+                            "@class": "OutputReference",
+                            "@version": null,
+                            "uuid": "5f40bf9e-f80e-4381-8fcd-7bee70c4b543",
+                            "attributes": [
+                                [
+                                    "i",
+                                    "structure"
+                                ]
+                            ],
+                            "output_schema": null
+                        }
+                    },
+                    "output_schema": null,
+                    "uuid": "9831fd0f-7c7c-4389-8b5f-226ab7da643d",
+                    "index": 1,
+                    "name": "rdKit Conformers",
+                    "metadata": {},
+                    "config": {
+                        "@module": "jobflow.core.job",
+                        "@class": "JobConfig",
+                        "@version": "0.1.18",
+                        "resolve_references": true,
+                        "on_missing_references": "error",
+                        "manager_config": {},
+                        "expose_store": false,
+                        "pass_manager_config": true,
+                        "response_manager_config": {}
+                    },
+                    "hosts": [
+                        "15280d47-6017-4ed0-9341-9ec62640a0ab"
+                    ],
+                    "metadata_updates": [],
+                    "config_updates": [],
+                    "name_updates": [],
+                    "files": "files",
+                    "settings": "settings",
+                    "properties": "properties"
+                },
+                "store": null,
+                "_fw_name": "{{jobflow.managers.fireworks.JobFiretask}}"
+            }
+        ]
+    },
+    "fw_id": 884,
+    "created_on": "2024-12-05T15:38:54.549389",
+    "updated_on": "2024-12-05T15:39:02.644158",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 884,
+            "launch_dir": "/home/carson/Liberty University Dropbox/Carson Farmer/research/Software/JobflowChemistry/launcher_2024-12-05-15-39-02-638057",
+            "host": "computer",
+            "ip": "127.0.1.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2024-12-05T15:39:02.643074",
+                    "updated_on": "2024-12-05T15:39:02.643081"
+                }
+            ],
+            "launch_id": 867
+        }
+    ],
+    "state": "RUNNING",
+    "name": "rdKit Conformers"
+}

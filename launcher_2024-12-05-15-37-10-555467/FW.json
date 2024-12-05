@@ -1,0 +1,113 @@
+{
+    "spec": {
+        "_add_launchpad_and_fw_id": true,
+        "_tasks": [
+            {
+                "job": {
+                    "@module": "jobflow.core.job",
+                    "@class": "Job",
+                    "@version": "0.1.18",
+                    "function": {
+                        "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                        "@callable": "ConformerGeneration.make",
+                        "@bound": {
+                            "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                            "@class": "Auto3DConformers",
+                            "@version": null,
+                            "name": "Auto 3D Conformer Generation",
+                            "k": null,
+                            "window": 10.0,
+                            "enumerate_tautomer": false,
+                            "enumerate_isomer": true,
+                            "mpi_np": 4,
+                            "max_confs": null,
+                            "use_gpu": true,
+                            "gpu_idx": 0,
+                            "capacity": 42,
+                            "optimizing_engine": "AIMNET",
+                            "patience": 1000,
+                            "opt_steps": 5000,
+                            "convergence_threshold": 0.003,
+                            "threshold": 0.3,
+                            "memory": null,
+                            "batchsize_atoms": 1024
+                        }
+                    },
+                    "function_args": [
+                        {
+                            "@module": "jobflow.core.reference",
+                            "@class": "OutputReference",
+                            "@version": null,
+                            "uuid": "1a718de3-0844-49cb-8e3f-d1474d80cb78",
+                            "attributes": [
+                                [
+                                    "i",
+                                    "structure"
+                                ]
+                            ],
+                            "output_schema": null
+                        }
+                    ],
+                    "function_kwargs": {},
+                    "output_schema": null,
+                    "uuid": "2013f998-0c78-4aac-936f-f2323976f81f",
+                    "index": 1,
+                    "name": "Auto 3D Conformer Generation",
+                    "metadata": {},
+                    "config": {
+                        "@module": "jobflow.core.job",
+                        "@class": "JobConfig",
+                        "@version": "0.1.18",
+                        "resolve_references": true,
+                        "on_missing_references": "error",
+                        "manager_config": {},
+                        "expose_store": false,
+                        "pass_manager_config": true,
+                        "response_manager_config": {}
+                    },
+                    "hosts": [
+                        "2b219817-84a8-415a-bb46-f61689ab4d14"
+                    ],
+                    "metadata_updates": [],
+                    "config_updates": [],
+                    "name_updates": [],
+                    "files": "files",
+                    "settings": "settings",
+                    "properties": "properties"
+                },
+                "store": null,
+                "_fw_name": "{{jobflow.managers.fireworks.JobFiretask}}"
+            }
+        ]
+    },
+    "fw_id": 839,
+    "created_on": "2024-12-05T15:37:00.520455",
+    "updated_on": "2024-12-05T15:37:10.563427",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 839,
+            "launch_dir": "/home/carson/Liberty University Dropbox/Carson Farmer/research/Software/JobflowChemistry/launcher_2024-12-05-15-37-10-555467",
+            "host": "computer",
+            "ip": "127.0.1.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2024-12-05T15:37:10.562061",
+                    "updated_on": "2024-12-05T15:37:10.562069"
+                }
+            ],
+            "launch_id": 833
+        }
+    ],
+    "state": "RUNNING",
+    "name": "Auto 3D Conformer Generation"
+}

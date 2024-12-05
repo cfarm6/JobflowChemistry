@@ -16,6 +16,7 @@ from typing import Union
 from ..Structure import Structure
 from ..outputs import Settings, Properties
 
+
 @dataclass
 class EnergyCalculation(Maker):
     name: str = "Energy Calculator"
@@ -30,7 +31,28 @@ class EnergyCalculation(Maker):
     def make(self, structure: Structure):
         if type(structure) is list:
             jobs = [self.make(s) for s in structure]
-            return Response(replace=jobs)
+            return Response(
+                output={
+                    "structure": [x.output["structure"] for x in jobs],
+                    "settings": Settings({}),
+                    "properties": [x.output["properties"] for x in jobs],
+                },
+                addition=jobs,
+            )
+        if structure.GetNumConformers() > 1:
+            jobs = []
+            for confId in range(structure.GetNumConformers()):
+                s = Structure(rdchem.Mol(structure, confId=confId))
+                jobs.append(self.make(s))
+            return Response(
+                output={
+                    "structure": [x.output["structure"] for x in jobs],
+                    "settings": Settings({}),
+                    "properties": [x.output["properties"] for x in jobs],
+                },
+                addition=jobs,
+            )
+
         properties = self.calculate_energy(structure)
         settings = self.get_settings()
         return Response(
@@ -45,10 +67,9 @@ class EnergyCalculation(Maker):
 
 
 @dataclass
-class ASEEnergyCalculator(
-    ASECalculator, EnergyCalculation
-):
+class ASEEnergyCalculator(ASECalculator, EnergyCalculation):
     name: str = "ASE Energy Calculator"
+
     def get_settings(self):
         raise NotImplementedError
 
@@ -59,23 +80,17 @@ class ASEEnergyCalculator(
 
 
 @dataclass
-class TBLiteEnergyCalculation(
-    TBLiteCalculator, ASEEnergyCalculator
-):
+class TBLiteEnergyCalculation(TBLiteCalculator, ASEEnergyCalculator):
     name: str = "TBLite Energy Calculation"
 
 
 @dataclass
-class AimNet2EnergyCalculation(
-    AimNet2Calculator, ASEEnergyCalculator
-):
+class AimNet2EnergyCalculation(AimNet2Calculator, ASEEnergyCalculator):
     name: str = "AimNet2 Energy Calculation"
 
 
 @dataclass
-class ORCAEnergyCalculation(
-    ORCACalculator, EnergyCalculation
-):
+class ORCAEnergyCalculation(ORCACalculator, EnergyCalculation):
     name: str = "ORCA Energy Calculation"
     runtype: str = "ENERGY"
 

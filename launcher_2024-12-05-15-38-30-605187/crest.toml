@@ -1,0 +1,9 @@
+threads = 20
+runtype = "protonate"
+input = "input.xyz"
+
+[protonation]
+ion = "Na+"
+ewin = 10.0
+ffopt = true
+finalopt = true

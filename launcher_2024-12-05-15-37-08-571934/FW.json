@@ -1,0 +1,96 @@
+{
+    "spec": {
+        "_add_launchpad_and_fw_id": true,
+        "_tasks": [
+            {
+                "job": {
+                    "@module": "jobflow.core.job",
+                    "@class": "Job",
+                    "@version": "0.1.18",
+                    "function": {
+                        "@module": "jobflowchemistry.GeometryOptimization.geometry_optimization",
+                        "@callable": "GeometryOptimization.make",
+                        "@bound": {
+                            "@module": "jobflowchemistry.GeometryOptimization.geometry_optimization",
+                            "@class": "AimNet2Optimization",
+                            "@version": null,
+                            "name": "AimNet2 Optimization",
+                            "charge": null,
+                            "multiplicity": null,
+                            "model": "aimnet2",
+                            "optimizer": "LBFGS",
+                            "fmax": 0.05,
+                            "steps": 250000
+                        }
+                    },
+                    "function_args": [
+                        {
+                            "@module": "jobflowchemistry.Structure",
+                            "@class": "Structure",
+                            "data": "b'\\x80\\x04\\x95\\xe7\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x8c\\x1ajobflowchemistry.Structure\\x94\\x8c\\tStructure\\x94\\x93\\x94B\\xac\\x01\\x00\\x00\\xef\\xbe\\xad\\xde\\x00\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x80\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00(\\x00\\x00\\x00\\x03\\x04\\x01\\x00(\\x00\\x00\\x00\\x01\\x01\\x0b\\x00\\x0b\\x00\\x01\\x0b\\x00\\x02\\x0c\\x00\\x03\\x0c\\x00\\x04\\r\\x00\\x05\\r\\x00\\x06\\x0e\\x00\\x07\\x0e\\x00\\x08\\x0e\\x00\\t\\x0f \\t\\x10\\x00\\n\\x0f(\\x02\\x0b\\x0c\\x00\\x0b\\r\\x00\\x0c\\x0e\\x00\\r\\x0f\\x00B\\x00\\x00\\x00\\x00\\x17\\xd6\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x11\\xf4\\xf4\\x9d>R\\xebQ\\xbe\\xac\\x91\\xc5?\\xd1\\x01f\\xbe\\xc8*\\r\\xc0\\xca\\x07D?\\xa2\\xb8\\x10\\xc0^5L\\xbf2\\x90\\x84?\\xe7\\xe5\\xf2\\xbf\\x1e,\\x8a\\xbf i\\x91\\xbf\\xf2\\xc9\\x12?,@\\xc3\\xbf\\x8d\\x8b\\xe8\\xbf\\x07\\xb6\\xff?\\x7fp\\xe0\\xbf\\xe3&$\\xbe<9k\\xbf\\x0e,\\xd8?Cy\\x8e\\xbf\\x92\\xb5>\\xc0\\xb7N\\xa5?\\xab\\x05\\xc7\\xbem5\\xb4\\xbf\\xe4\\xa1\\xd1?\\x18p\\x8e?\\xc0\\x83\\x14@\\x19\\x98\\x84?\\xc8\\x03\\xde=\\xda\\x10\\xe6?\\x03\\xecj?h\\x0f\\x05\\xc0\\xd3\\xd9`\\xbd\\xa5\\xc0W\\xbf[(\\xbe>R@\\xb5\\xbfo\\xa0\\xd1\\xbe\\xb8\\x04\\x0c\\xbd\\xa2\\x9f\\x80?Y.a\\xbf\\xb8\\xe7)\\xbf!\\xa2\\xd0\\xbft\\xf0\\x89?\\xd4\\xa4\\n\\xbe\\xeb2\\xda?\\xd9\\xed\\xc0>\\x11\\x81r\\xbfY]E@]\\x13\\xd6?k\\x12d\\xbc\\x16\\x94\\x85\\x94R\\x94}\\x94\\x85\\x94b.'"
+                        }
+                    ],
+                    "function_kwargs": {},
+                    "output_schema": null,
+                    "uuid": "8806b9ed-fe7d-4023-bfff-3edf0e3acd11",
+                    "index": 1,
+                    "name": "AimNet2 Optimization",
+                    "metadata": {},
+                    "config": {
+                        "@module": "jobflow.core.job",
+                        "@class": "JobConfig",
+                        "@version": "0.1.18",
+                        "resolve_references": true,
+                        "on_missing_references": "error",
+                        "manager_config": {},
+                        "expose_store": false,
+                        "pass_manager_config": true,
+                        "response_manager_config": {}
+                    },
+                    "hosts": [
+                        "f4a7cfcf-2eae-4b23-8891-eb94949c1ae4",
+                        "2b219817-84a8-415a-bb46-f61689ab4d14"
+                    ],
+                    "metadata_updates": [],
+                    "config_updates": [],
+                    "name_updates": [],
+                    "files": "files",
+                    "settings": "settings",
+                    "properties": "properties"
+                },
+                "store": null,
+                "_fw_name": "{{jobflow.managers.fireworks.JobFiretask}}"
+            }
+        ]
+    },
+    "fw_id": 850,
+    "created_on": "2024-12-05T15:37:08.534448",
+    "updated_on": "2024-12-05T15:37:08.578478",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 850,
+            "launch_dir": "/home/carson/Liberty University Dropbox/Carson Farmer/research/Software/JobflowChemistry/launcher_2024-12-05-15-37-08-571934",
+            "host": "computer",
+            "ip": "127.0.1.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2024-12-05T15:37:08.577475",
+                    "updated_on": "2024-12-05T15:37:08.577482"
+                }
+            ],
+            "launch_id": 831
+        }
+    ],
+    "state": "RUNNING",
+    "name": "AimNet2 Optimization"
+}

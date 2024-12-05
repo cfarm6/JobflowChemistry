@@ -1,0 +1,106 @@
+{
+    "spec": {
+        "_add_launchpad_and_fw_id": true,
+        "_tasks": [
+            {
+                "job": {
+                    "@module": "jobflow.core.job",
+                    "@class": "Job",
+                    "@version": "0.1.18",
+                    "function": {
+                        "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                        "@callable": "ConformerGeneration.make",
+                        "@bound": {
+                            "@module": "jobflowchemistry.ConformerGeneration.conformer_generation",
+                            "@class": "Auto3DConformers",
+                            "@version": null,
+                            "name": "Auto 3D Conformer Generation",
+                            "k": null,
+                            "window": 10.0,
+                            "enumerate_tautomer": false,
+                            "enumerate_isomer": true,
+                            "mpi_np": 4,
+                            "max_confs": null,
+                            "use_gpu": true,
+                            "gpu_idx": 0,
+                            "capacity": 42,
+                            "optimizing_engine": "AIMNET",
+                            "patience": 1000,
+                            "opt_steps": 5000,
+                            "convergence_threshold": 0.003,
+                            "threshold": 0.3,
+                            "memory": null,
+                            "batchsize_atoms": 1024
+                        }
+                    },
+                    "function_args": [
+                        {
+                            "@module": "jobflowchemistry.Structure",
+                            "@class": "Structure",
+                            "data": "b'\\x80\\x04\\x95\\xe7\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x8c\\x1ajobflowchemistry.Structure\\x94\\x8c\\tStructure\\x94\\x93\\x94B\\xac\\x01\\x00\\x00\\xef\\xbe\\xad\\xde\\x00\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x80\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\t\\x00 \\x00\\x00\\x00\\x01\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x08\\x00(\\x00\\x00\\x00\\x03\\x02\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00 \\x00\\x00\\x00\\x04\\x06\\x00(\\x00\\x00\\x00\\x03\\x04\\x01\\x00(\\x00\\x00\\x00\\x01\\x01\\x0b\\x00\\x0b\\x00\\x01\\x0b\\x00\\x02\\x0c\\x00\\x03\\x0c\\x00\\x04\\r\\x00\\x05\\r\\x00\\x06\\x0e\\x00\\x07\\x0e\\x00\\x08\\x0e\\x00\\t\\x0f \\t\\x10\\x00\\n\\x0f(\\x02\\x0b\\x0c\\x00\\x0b\\r\\x00\\x0c\\x0e\\x00\\r\\x0f\\x00B\\x00\\x00\\x00\\x00\\x17\\xd6\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x11\\x16Q\\xaf>\\x87\\xa4\\xd5\\xbe\\xf3B\\xc8?\\x1dz\\x8b\\xbe\\t\\n\\x13\\xc0\\xafS&?3\\x13\\x13\\xc00\\xa6A\\xbf\\x08\\xbe\\x87?Ty\\xf3\\xbf\\x0c;\\x7f\\xbfo\\xdc\\x89\\xbf\\x8f\\x1d(?A\\xac\\xbd\\xbf&\\xfc\\xe1\\xbf}\\x1e\\x05@\\xd1\\xa4\\xda\\xbfN\\xe2\\x04\\xbe\\x8eJQ\\xbfY\\xf1\\xca?j\\x0e\\x8a\\xbf\\x85\\xa98\\xc0\\x12\\xe9\\xb0?v(\\xf1\\xbe\\x97m\\xad\\xbff^\\xe2?\\xa2r\\x81?\\x0fm\\x14@4,x?\\xf5\\x00\\xf0=\\xc5P\\xda?\\xcdok?K%\\x03\\xc0\\x86\\xd9\\x8a\\xbd\\xdd\\xfe|\\xbf{H\\xd6>\\x95\\xbb\\xbc\\xbfB\\x9d\\xd1\\xbe%\\xfdY=:R\\x8c?\\x18\\x16m\\xbf\\xe7\\xe6 \\xbf\\xdaI\\xd0\\xbf\\xe5W\\x90?\\x00\\xa1\\xfd\\xbd6o\\xdc?\\x98J\\xe7>\\xb7\\xe7t\\xbfj\\xc51@N\\x7f\\xe3?\\x9dR\\x15\\xbe\\x16\\x94\\x85\\x94R\\x94}\\x94\\x85\\x94b.'"
+                        }
+                    ],
+                    "function_kwargs": {},
+                    "output_schema": null,
+                    "uuid": "8e7ccbe4-6067-4c8f-ace4-e3c25abb7d9f",
+                    "index": 1,
+                    "name": "Auto 3D Conformer Generation",
+                    "metadata": {},
+                    "config": {
+                        "@module": "jobflow.core.job",
+                        "@class": "JobConfig",
+                        "@version": "0.1.18",
+                        "resolve_references": true,
+                        "on_missing_references": "error",
+                        "manager_config": {},
+                        "expose_store": false,
+                        "pass_manager_config": true,
+                        "response_manager_config": {}
+                    },
+                    "hosts": [
+                        "91bce4df-31fb-4aa0-ab34-235df7e80229",
+                        "18ca404d-e7b7-4326-996b-aaef70bbba32"
+                    ],
+                    "metadata_updates": [],
+                    "config_updates": [],
+                    "name_updates": [],
+                    "files": "files",
+                    "settings": "settings",
+                    "properties": "properties"
+                },
+                "store": null,
+                "_fw_name": "{{jobflow.managers.fireworks.JobFiretask}}"
+            }
+        ]
+    },
+    "fw_id": 908,
+    "created_on": "2024-12-05T15:39:40.968201",
+    "updated_on": "2024-12-05T15:39:41.024353",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 908,
+            "launch_dir": "/home/carson/Liberty University Dropbox/Carson Farmer/research/Software/JobflowChemistry/launcher_2024-12-05-15-39-41-015313",
+            "host": "computer",
+            "ip": "127.0.1.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2024-12-05T15:39:41.022851",
+                    "updated_on": "2024-12-05T15:39:41.022859"
+                }
+            ],
+            "launch_id": 890
+        }
+    ],
+    "state": "RUNNING",
+    "name": "Auto 3D Conformer Generation"
+}
