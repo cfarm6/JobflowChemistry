@@ -56,6 +56,9 @@ class EnergyCalculation(Maker):
         properties = self.calculate_energy(structure)
         if "global" in properties:
             for k,v in properties["global"].items():
+                if type(v) is list: 
+                    structure.SetProp(k, ",".join([str(x) for x in v]), computed=True)
+                    continue
                 structure.SetDoubleProp(k, float(v), computed=True)
         if "atomic" in properties:
             for k,v in properties["atomic"].items():

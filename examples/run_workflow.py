@@ -1,30 +1,22 @@
 from jobflowchemistry.StructureInput import PubChemInput
 from jobflowchemistry.StructureGeneration import (
     RDKitGeneration,
-    CRESTProtonation,
     CRESTDeprotonation,
-    aISSDocking,
 )
 from jobflowchemistry.EnergyCalculation import (
     AimNet2EnergyCalculation,
-    ORCAEnergyCalculation,
+    TBLiteEnergyCalculation
 )
 from jobflowchemistry.GeometryOptimization import (
     AimNet2Optimization,
-    ORCAOptimization,
 )
 from jobflowchemistry.PropertyCalculator import (
-    QupKakePrediction,
-    ConceptualDFTWorkflow,
     MobcalCollisionCrossSection,
 )
 from jobflowchemistry.ConformerGeneration import (
-    rdKitConformers,
     Auto3DConformers,
-    CRESTConformers,
 )
-
-from jobflowchemistry.Utilities import BoltzmannWeighting
+from jobflowchemistry.PropertyWorkflows import CollisionCrossSectionWorkflow
 
 #
 from jobflow.managers.fireworks import flow_to_workflow
@@ -36,85 +28,40 @@ from icecream import ic
 # Node Settings
 input_maker = PubChemInput()
 structure_maker = RDKitGeneration()
-orcaenergy_maker = ORCAEnergyCalculation(
-    parallel="PAL16", scf_conv="SLOPPYSCF", executable="/home/carson/orca_6_0_1/orca"
-)
-aimnet2energy_maker = AimNet2EnergyCalculation()
 aimnet2opt_maker = AimNet2Optimization()
-orcaopt_maker = ORCAOptimization(
-    parallel="PAL16",
-    geom_conv="LOOSEOPT",
-    scf_conv="SLOPPYSCF",
-    executable="/home/carson/orca_6_0_1/orca",
-)
-cdft_calculation = ConceptualDFTWorkflow()
-qupkake_maker = QupKakePrediction(mp=False)
-protonation_maker = CRESTProtonation(ion="Na+", ion_charge=1, ewin=10.0, threads=20)
-deprotonation_maker = CRESTDeprotonation(ewin=30.0)
-aISSDocking_maker = aISSDocking(fast=True, ensemble=False)
-rdKitConf_maker = rdKitConformers(numConfs=2)
+aimnet2energy_maker = TBLiteEnergyCalculation()
+deprotonation_maker = CRESTDeprotonation(ewin=30.0, checkStructure=False)
 auto3d_maker = Auto3DConformers(k=2)
-crestconf_maker = CRESTConformers(
-    energy_method="gfn2", dynamics_method="gfnff", threads=20, ewin=3.0
-)
 mobcal_maker = MobcalCollisionCrossSection(
-    charge_type="AimNet2 Partial Charges [e]", num_threads=5
+    charge_type="Mulliken Partial Charges [e]", num_threads=5, temperature=300.0
 )
-boltzmann_maker = BoltzmannWeighting(temperature=300, property="CCS [A^2]")
-
+ccs_workflow = CollisionCrossSectionWorkflow(temperature=300.0)
 # Make the workflow
-input_job = input_maker.make(input=75921)
+input_job = input_maker.make(input=10784527)
 gen_job = structure_maker.make(structure=input_job.output["structure"])
+tblite_job = aimnet2energy_maker.make(structure=input_job.output["structure"])
 aimnet2opt_job = aimnet2opt_maker.make(structure=gen_job.output["structure"])
-auto3d_job = auto3d_maker.make(structure=aimnet2opt_job.output["structure"])
+deprotonate_job = deprotonation_maker.make(
+    structure=aimnet2opt_job.output["structure"],
+)
+ccs_job = ccs_workflow.make(
+    structure=deprotonate_job.output["structure"],
+    conformer_calculator=auto3d_maker,
+    optimization_calculator=aimnet2opt_maker,
+    energy_calculator=aimnet2energy_maker,
+    ccs_calculator=mobcal_maker,
+)
 
-# rdKitConf_job = rdKitConf_maker.make(structure=auto3d_job.output["structure"])
-
-aimnet2energy_job = aimnet2energy_maker.make(structure=auto3d_job.output["structure"])
-mobcal_job = mobcal_maker.make(structure=aimnet2energy_job.output["structure"])
-boltzmann_job = boltzmann_maker.make(structure=mobcal_job.output["structure"])
-# crestconf_job = crestconf_maker.make(structure=aimnet2opt_job.output["structure"])
-# orcaenergy_job = orcaenergy_maker.make(structure=aimnet2opt_job.output['structure'])
-# orcaopt_job = orcaopt_maker.make(structure=aimnet2opt_job.output["structure"])
-# cdft_job = cdft_calculation.make(
-#     structure=aimnet2opt_job.output["structure"],
-#     neutral_properties=aimnet2opt_job.output["properties"],
-#     calculator=aimnet2energy_maker,
-# )
-# deprotonate_job = deprotonation_maker.make(
-#     structure=aimnet2opt_job.output["structure"],
-# )
-# protonate_job = protonation_maker.make(
-#     structure=deprotonate_job.output["structure"],
-# )
-# docking_job = aISSDocking_maker.make(
-#     structure_1=deprotonate_job.output["structure"],
-#     structure_2=protonate_job.output["structure"],
-# )
-# qupkake_job = qupkake_maker.make(structure=aimnet2opt_job.output["structure"])
-#
 flow = Flow(
     [
         input_job,
         gen_job,
+        tblite_job,
         aimnet2opt_job,
-        mobcal_job,
-        # orcaenergy_job,
-        # crestconf_job,
-        # orcaopt_job,
-        # cdft_job,
-        # qupkake_job,
-        # protonate_job,
-        # deprotonate_job,
-        # docking_job,
-        # rdKitConf_job,
-        aimnet2energy_job,
-        # aimnet2opt1_job,
-        auto3d_job,
-        boltzmann_job,
-        # aimnet2energy2_job,
+        deprotonate_job,
+        ccs_job,
     ],
-    name=str(2776882),
+    name=str(75921),
 )
 fw = flow_to_workflow(flow)
 lpad = LaunchPad.auto_load()
