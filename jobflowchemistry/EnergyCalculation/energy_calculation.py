@@ -54,6 +54,17 @@ class EnergyCalculation(Maker):
             )
 
         properties = self.calculate_energy(structure)
+        if "global" in properties:
+            for k,v in properties["global"].items():
+                structure.SetDoubleProp(k, float(v), computed=True)
+        if "atomic" in properties:
+            for k,v in properties["atomic"].items():
+                for i, atom in enumerate(structure.GetAtoms()):
+                    atom.SetDoubleProp(k, float(v[i]))
+        if "bond" in properties:
+            for k,v in properties["bond"].items():
+                bond = structure.GetBondBetweenAtoms(v[0], v[1])
+                bond.SetDoubleProp(k, float(v[2]))
         settings = self.get_settings()
         return Response(
             output={
