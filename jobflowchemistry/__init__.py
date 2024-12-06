@@ -5,3 +5,5 @@ from .EnergyCalculation import *
 from .StructureGeneration import *
 from .StructureInput import *
 # from .Biological import *
+from rdkit.Chem import rdchem
+rdchem.SetDefaultPickleProperties(rdchem.PropertyPickleOptions.AllProps)
