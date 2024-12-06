@@ -45,8 +45,10 @@ class TBLiteCalculator(ASECalculator):
         properties = {
             "global": {
                 "Total Energy [eV]": total_energy,
+                "Dipole Moment [D]": list(dipole),
+            },
+            "atomic":{
                 "Mulliken Partial Charges [e]": charges,
-                "Dipole Moment [D]": dipole,
             }
         }
         return properties

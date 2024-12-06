@@ -8,7 +8,15 @@ from ..outputs import Properties
 from typing import Literal
 
 @dataclass
-class BoltzmannWeighting(Maker):
+class Utilities(Maker):
+    name: str = "Utilities"
+    @job 
+    def make(self):
+        raise NotImplementedError
+
+
+@dataclass
+class BoltzmannWeighting(Utilities):
     name: str = "Boltzmann Weighting"
     temperature: float = 300.0
     property_type: Literal["global"] = "global"
@@ -16,20 +24,37 @@ class BoltzmannWeighting(Maker):
     energy_name: str = "Total Energy [eV]"
 
     def get_settings(self):
-        return {k:v for k,v in vars(self).items() if k != "name"}
-    
+        return {k: v for k, v in vars(self).items() if k != "name"}
+
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
         # molecule = pickle.loads(molecule)
-        if type(structure) is not list: Response(stop_children=True)
-
+        if type(structure) is Structure:
+            settings = self.get_settings()
+            if self.property_type == "global":
+                prop = structure.GetProp(self.property, autoConvert=True)
+            ic(prop)
+            properties = {
+                self.property_type: {f"Boltzmann Weighted {self.property}": prop}
+            }
+            return Response(
+                output={
+                    "structure": Structure(structure),
+                    "files": rdmolfiles.MolToV3KMolBlock(structure),
+                    "settings": settings,
+                    "properties": Properties(properties),
+                },
+                stored_data=properties,
+            )
+        # if type(structure) is not list: Response(stop_children=True)
+        ic(type(structure))
         energy = [s.GetProp(self.energy_name, autoConvert=True) for s in structure]
         energy = np.array(energy)
         energy = energy - np.min(energy)
 
         if self.property_type == "global":
             prop = [s.GetProp(self.property, autoConvert=True) for s in structure]
-        
+
         prop = np.array(prop)
         kb = 8.617333262e-5  # eV/K
         num = np.sum(prop * np.exp(-1 * energy / kb / self.temperature))
@@ -39,8 +64,10 @@ class BoltzmannWeighting(Maker):
         ic(average)
         settings = self.get_settings()
 
-        properties = {self.property_type: {f"Boltzmann Weighted {self.property}": average}}
-        
+        properties = {
+            self.property_type: {f"Boltzmann Weighted {self.property}": average}
+        }
+
         return Response(
             output={
                 "structure": [Structure(s) for s in structure],

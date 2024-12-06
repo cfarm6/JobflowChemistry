@@ -18,6 +18,7 @@ from ..Calculators import CRESTCalculator
 from ..utils import ase2rdkit
 from ..ConformerGeneration import rdKitConformers
 
+
 @dataclass
 class StructureGeneration(Maker):
     name: str = field(default="Structure Generation")
@@ -53,7 +54,8 @@ class StructureGeneration(Maker):
             )
 
         structure = self.generate_structure(structure)
-        if structure is None: return Response(stop_children=True)
+        if structure is None:
+            return Response(stop_children=True)
         settings = self.settings()
         properties = self.properties(structure)
 
@@ -98,7 +100,7 @@ class CRESTProtonation(StructureGeneration):
     freezeopt = None
     finalopt: bool = True
     threads: int = 1
-    
+
     def make_dict(self):
         keys = ["ion", "ewin", "ffopt", "freezeopt", "finalopt"]
         d = {}
@@ -110,13 +112,13 @@ class CRESTProtonation(StructureGeneration):
 
     def settings(self):
         return {
-            'ion': self.ion,
-            'ion_charge': self.ion_charge,
-            'ewin': self.ewin,
-            'ffopt': self.ffopt,
-            'freezeopt': self.freezeopt,
-            'finalopt': self.finalopt,
-            'threads': self.threads
+            "ion": self.ion,
+            "ion_charge": self.ion_charge,
+            "ewin": self.ewin,
+            "ffopt": self.ffopt,
+            "freezeopt": self.freezeopt,
+            "finalopt": self.finalopt,
+            "threads": self.threads,
         }
 
     def properties(self, structure):
@@ -143,7 +145,8 @@ class CRESTProtonation(StructureGeneration):
         suppl = list(
             rdmolfiles.SDMolSupplier("protonated.sdf", sanitize=False, removeHs=False)
         )
-        if len(suppl) == 1: suppl = suppl[0]
+        if len(suppl) == 1:
+            suppl = suppl[0]
 
         return suppl
 
@@ -155,33 +158,104 @@ class CRESTDeprotonation(
     name: str = "CREST Deprotonation"
     ewin: float = None
 
-
     def generate_structure(self, structure: Structure):
         with rdmolfiles.SDWriter("input.sdf") as f:
             f.write(structure)
-        commands = [
-            "crest",
-            "input.sdf",
-            "--deprotonate",
-        ]
+        d = {"calculation": {"level": {"method": "gfn2", "rdwbo": True}}}
+        with open("crest.toml", "wb") as f:
+            tomli_w.dump(d, f)
+        commands = ["crest", "input.sdf", "--deprotonate", "--input", "crest.toml"]
         if self.ewin is not None:
             commands.append(f"--ewin {self.ewin}")
         charge = rdmolops.GetFormalCharge(structure)
-        commands.append(f"--chrg {charge}")
+        commands.append(f"--chrg {charge} --newversion")
         commands.append(" > log.out")
         subprocess.call(" ".join(commands), shell=True)
-        if not os.path.exists("deprotonated.sdf"):
+        if not os.path.exists("deprotonated.xyz"):
             return None
-        
-        structures = list(
-            rdmolfiles.SDMolSupplier("deprotonated.sdf", sanitize=False, removeHs=False)
-        )
+        subprocess.call("obabel deprotonated.xyz -O deprotonated.sdf", shell = True)
 
+        deprotonated_conformers = list(
+            rdmolfiles.SDMolSupplier(
+                "deprotonated.sdf", sanitize=False, removeHs=False, strictParsing=False
+            )
+        )
+        
+        with rdmolfiles.SDWriter("updated.sdf", ) as f:
+            topo = rdchem.Mol(structure)
+            for i,s in enumerate(deprotonated_conformers):
+                _s = rdchem.Mol(s)
+                for mol in [_s, topo]:
+                    for bond in mol.GetBonds():
+                        bond.SetStereo(rdchem.BondStereo.STEREOANY)
+                        if bond.GetBondType() in [
+                            rdchem.BondType.SINGLE,
+                            rdchem.BondType.DOUBLE,
+                            rdchem.BondType.TRIPLE,
+                            rdchem.BondType.QUADRUPLE,
+                            rdchem.BondType.QUINTUPLE,
+                        ]:
+                            bond.SetBondType(rdchem.BondType.SINGLE)
+                idxs = topo.GetSubstructMatch(_s)  # s_idx -> structure_idx
+                # Find the missing atom idx 
+                for atom in structure.GetAtoms():
+                    if atom.GetIdx() in idxs: continue
+                    h_idx = atom.GetIdx()
+                    bond = atom.GetBonds()[0]
+                    begin_idx = bond.GetBeginAtomIdx()
+                    end_idx = bond.GetEndAtomIdx()
+                    other_idx = begin_idx
+                    if other_idx == h_idx: other_idx = end_idx
+                    s_idx = idxs.index(other_idx)
+                    s_atom = s.GetAtomWithIdx(s_idx)
+                    s_atom.SetFormalCharge(-1)
+                f.write(s)
+
+
+                # Copy the conformers
+                # structure_conf = rdchem.Conformer(_structure.GetConformer())
+                # s_conf = rdchem.Conformer(s.GetConformer())
+                # # Iterate over the atoms and update the conformer position
+                # for atom in s.GetAtoms():
+                #     structure_conf.SetAtomPosition(
+                #         idxs[atom.GetIdx()], s_conf.GetAtomPosition
+                #     (atom.GetIdx()))
+                # new_mol = rdchem.EditableMol(structure)
+                # for atom in topo.GetAtoms():
+                #     # If the atom is in the old structure keep
+                #     if atom.GetIdx() in idxs:
+                #         continue
+                #     # Get the other atom in the bond
+                #     for bond in atom.GetBonds():
+                #         update_index = bond.GetBeginAtomIdx()
+                #         if update_index == atom.GetIdx():
+                #             update_index = bond.GetEndAtomIdx()
+                #         update_atom = structure.GetAtomWithIdx(update_index)
+                #         update_atom.SetFormalCharge(update_atom.GetFormalCharge() - 1)
+                #         new_mol.ReplaceAtom(update_index, update_atom)
+                #     new_mol.RemoveAtom(atom.GetIdx())
+                # new_mol = rdchem.Mol(new_mol.GetMol())
+                # new_conf = rdchem.Conformer(new_mol.GetNumAtoms())
+                # deprotonated_conf = s.GetConformer()
+                # for atom in s.GetAtoms():
+                #     new_conf.SetAtomPosition(
+                #         idxs[atom.GetIdx()],
+                #         deprotonated_conf.GetAtomPosition(atom.GetIdx()),
+                #     )
+                # _mol = rdchem.Mol(new_mol)
+                # ic(_mol.GetNumAtoms())
+                # ic(new_conf.GetNumAtoms())
+                # _mol.AddConformer(new_conf, assignId=False)
+                # rdmolfiles.MolToV3KMolFile(_mol, f"mol_{i}.mol")
+                # f.write(_mol)
+        structures = list(rdmolfiles.SDMolSupplier("updated.sdf", removeHs=False))
         if len(structures) == 1:
-            structures = structures[0]
-        return structure
+            return Structure(structures[0])
+        return structures
+
     def settings(self):
-        return {'ewin': self.ewin}
+        return {"ewin": self.ewin}
+
     def properties(self, structure):
         return {}
 

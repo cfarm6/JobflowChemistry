@@ -82,7 +82,13 @@ class PropertyCalculator(Maker):
 
 
 @dataclass
-class MobcalCollisionCrossSection(PropertyCalculator):
+class CollisionCrossSectionCalculator(PropertyCalculator):
+    name: str = "Collision Cross Section Calculator"
+    pass
+
+
+@dataclass
+class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
     name: str = "Mobcal CCS Calculation"
     charge_type: str = None
     I2: int = 123456
@@ -161,6 +167,7 @@ class MobcalCollisionCrossSection(PropertyCalculator):
             )
             standard_deviation = standard_deviation_percent / 100 * CCS
         return structure, {"global":{"CCS [A^2]": CCS, "CCS Standard Deviation [A^2]": standard_deviation, "Mobility": 1/mobility}}
+
 
 @dataclass
 class QupKakePrediction(PropertyCalculator):
@@ -256,47 +263,3 @@ class CalculateGlobalConceptualDFTProperties(PropertyCalculator):
             },
             stored_data=properties,
         )
-
-
-@dataclass
-class ConceptualDFTWorkflow(PropertyCalculator):
-    name: str = "Conceptual DFT Workflow"
-
-    @job(files="files", settings="settings", properties="properties")
-    def make(
-        self,
-        calculator: EnergyCalculation,
-        structure: Structure,
-        properties_neutral: Properties = None,
-    ):
-        if type(structure) is list:
-            jobs = [self.make(s) for s in structure]
-            return Response(replace=jobs)
-        jobs = []
-        if calculator.charge is None:
-            calculator.charge = rdmolops.GetFormalCharge(structure)
-        baseCharge = calculator.charge
-        if properties_neutral is None:
-            calculator.charge = baseCharge
-            N = calculator.make(structure=structure)
-            jobs.append(N)
-            properties_neutral = N.output["properties"]
-        N_energy = properties_neutral
-
-        calculator.charge = baseCharge + 1
-        Np1 = calculator.make(structure=structure)
-        Np1_energy = Np1.output["properties"]
-        jobs.append(Np1)
-
-        calculator.charge = baseCharge - 1
-        Nm1 = calculator.make(structure=structure)
-        Nm1_energy = Nm1.output["properties"]
-        jobs.append(Nm1)
-
-        calculate = CalculateGlobalConceptualDFTProperties().make(
-            N_energy, Np1_energy, Nm1_energy
-        )
-        jobs.append(calculate)
-
-        flow = Flow(jobs, name="CDFT Calculation")
-        return Response(replace=flow)
