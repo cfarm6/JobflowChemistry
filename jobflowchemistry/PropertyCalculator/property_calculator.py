@@ -32,31 +32,36 @@ class PropertyCalculator(Maker):
     def make(self, structure: Structure):
         # molecule = pickle.loads(molecule)
         if type(structure) is list:
+            ic(len(structure))
             jobs = [self.make(s) for s in structure]
             return Response(
                 output={
                     "structure": [x.output["structure"] for x in jobs],
                     "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
             )
         if structure.GetNumConformers() > 1:
             jobs = []
+            ic(structure.GetNumConformers())
             for confId in range(structure.GetNumConformers()):
                 s = Structure(rdchem.Mol(structure, confId=confId))
                 jobs.append(self.make(s))
             return Response(
                 output={
                     "structure": [x.output["structure"] for x in jobs],
+                    "files": [x.output["files"] for x in jobs],
                     "settings": Settings({}),
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
             )
-
-        structure, properties = self.get_properties(structure)
-        
+        resp = self.get_properties(structure)
+        ic(resp)
+        structure = resp[0]
+        properties = resp[1]
         if "global" in properties:
             for k,v in properties["global"].items():
                 structure.SetDoubleProp(k, float(v), computed=True)
@@ -68,7 +73,7 @@ class PropertyCalculator(Maker):
             for k,v in properties["bond"].items():
                 bond = structure.GetBondBetweenAtoms(v[0], v[1])
                 bond.SetDoubleProp(k, float(v[2]))
-        
+
         settings = self.get_settings()
         return Response(
             output={
@@ -99,7 +104,7 @@ class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
     itn: int = 10
     inp: int = 40
     imp: int = 25
-    num_threads: int = 15
+    num_threads: int = 1
     def get_settings(self):
         return {k:v for k,v in vars(self).items() if k != "name"}
     def get_properties(self, structure: Structure):
@@ -166,7 +171,14 @@ class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
                 standard_deviation_percent_line.split()[-1]
             )
             standard_deviation = standard_deviation_percent / 100 * CCS
-        return structure, {"global":{"CCS [A^2]": CCS, "CCS Standard Deviation [A^2]": standard_deviation, "Mobility": 1/mobility}}
+        properties = {
+            "global": {
+                "CCS [A^2]": CCS,
+                "CCS Standard Deviation [A^2]": standard_deviation,
+                "Mobility": 1 / mobility,
+            }
+        }
+        return structure, properties
 
 
 @dataclass

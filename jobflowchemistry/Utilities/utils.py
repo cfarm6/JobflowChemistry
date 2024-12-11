@@ -26,6 +26,17 @@ class BoltzmannWeighting(Utilities):
     def get_settings(self):
         return {k: v for k, v in vars(self).items() if k != "name"}
 
+
+    def flatten_array(self, arr):
+        """Flatten an array of arrays of unknown depth."""
+        result = []
+        for item in arr:
+            if isinstance(item, list):  # Check if the item is a list
+                result.extend(self.flatten_array(item))  # Recursively flatten the sublist
+            else:
+                result.append(item)  # Add non-list items directly
+        return result
+    
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
         # molecule = pickle.loads(molecule)
@@ -47,7 +58,7 @@ class BoltzmannWeighting(Utilities):
                 stored_data=properties,
             )
         # if type(structure) is not list: Response(stop_children=True)
-        ic(type(structure))
+        structure = self.flatten_array(structure)
         energy = [s.GetProp(self.energy_name, autoConvert=True) for s in structure]
         energy = np.array(energy)
         energy = energy - np.min(energy)

@@ -2,6 +2,10 @@
 
 ## Quantum Chemistry and Small Molecule Analysis within the Jobflow Framework
 
+### Current ISSUES
+
+- Fireworks cannot be run in FIFO job ordering
+
 ### Package Structure
 
 To allow for introspection of the available tasks available in the package, the following submodules and jobs are available:

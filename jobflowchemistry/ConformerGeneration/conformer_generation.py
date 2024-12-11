@@ -3,6 +3,7 @@ from typing import Literal, Union
 import tomli_w 
 import subprocess
 import os
+from icecream import ic
 
 from jobflow import job, Flow, Maker, Response
 
@@ -11,6 +12,7 @@ from rdkit.Chem import rdmolops, rdmolfiles, rdDistGeom, rdchem
 
 from ..Structure import Structure
 from ..utils import rdkit2ase, ase2rdkit
+from ..outputs import Settings
 
 @dataclass
 class ConformerGeneration(Maker):
@@ -24,24 +26,28 @@ class ConformerGeneration(Maker):
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
         if type(structure) is list:
+            ic(len(structure))
             jobs = [self.make(s) for s in structure]
             return Response(
                 output={
                     "structure": [x.output["structure"] for x in jobs],
-                    "settings": {},
+                    "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
             )
         if structure.GetNumConformers() > 1:
             jobs = []
+            ic(structure.GetNumConformers())
             for confId in range(structure.GetNumConformers()):
                 s = Structure(rdchem.Mol(structure, confId=confId))
                 jobs.append(self.make(s))
             return Response(
                 output={
                     "structure": [x.output["structure"] for x in jobs],
-                    "settings": {},
+                    "files": [x.output["files"] for x in jobs],
+                    "settings": Settings({}),
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
@@ -151,7 +157,7 @@ class CRESTConformers(ConformerGeneration):
     runtype: Literal["imtd-gc", "nci-mtd", "imtd-smtd"] = "imtd-gc"
     preopt: bool = True
     topo: bool = True
-    threads: int = 1
+    parallel: int = 1
     opt_engine: Literal["ancopt", "rfo", "gd"] = "ancopt"
     hess_update: Literal["bfgs", "powell", "sd1", "bofill", "schlegel"] = "bfgs"
     maxcylcle: int = None
@@ -204,9 +210,12 @@ class CRESTConformers(ConformerGeneration):
     dynamics_gradfile: str = None
     dynamics_gradtype: Literal["engrad"] = None
     def generate_conformers(self, structure: Structure):
+        
         # Write structures to sdf file
         with rdmolfiles.SDWriter("input.sdf") as f:
             f.write(structure)
+        if self.energy_chrg is None: self.energy_chrg = rdmolops.GetFormalCharge(structure)
+        if self.dynamics_chrg is None: self.dynamics_chrg = rdmolops.GetFormalCharge(structure)
         self.input = "input.sdf"
         # Empty strucutres
         d = {'calculation':{}, 'cregen': {}}
@@ -233,7 +242,7 @@ class CRESTConformers(ConformerGeneration):
         d["dynamics"] = {"active": [2]}
         with open("crest.toml", "wb") as f:
             tomli_w.dump(d, f)
-        subprocess.call(f"crest --input crest.toml > log.out", shell = True)
+        subprocess.call(f"crest --input crest.toml --noreftopo > log.out", shell=True)
         if not os.path.exists("crest_conformers.sdf"): return None
         suppl = rdmolfiles.SDMolSupplier("crest_conformers.sdf", removeHs=False, sanitize=False)
         structure.RemoveAllConformers()

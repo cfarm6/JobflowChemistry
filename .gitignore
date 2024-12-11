@@ -2,3 +2,5 @@ database/*
 .vscode/
 mongodb.log*
 launcher*/*
+test/*
+*/__pycache__

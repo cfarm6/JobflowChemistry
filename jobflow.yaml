@@ -7,22 +7,22 @@ JOB_STORE:
     collection_name: docs_store
   additional_stores:
     files:
-      # type: GridFSStore
-      # database: data
-      # collection_name: files
-      # host: localhost
-      # port: 27017
-      type: S3Store
-      bucket: pfas-studio
-      endpoint_url: "http://localhost:4566"
-      key: blob_uuid
-      index: 
-        type: MongoStore
-        host: localhost
-        port: 27017
-        database: data
-        collection_name: files
-        key: blob_uuid
+      type: GridFSStore
+      database: data
+      collection_name: files
+      host: localhost
+      port: 27017
+      # type: S3Store
+      # bucket: pfas-studio
+      # endpoint_url: "http://localhost:4566"
+      # key: blob_uuid
+      # index: 
+      #   type: MongoStore
+      #   host: localhost
+      #   port: 27017
+      #   database: data
+      #   collection_name: files
+      #   key: blob_uuid
     settings: 
       type: MongoStore
       host: localhost
