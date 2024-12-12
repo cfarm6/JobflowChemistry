@@ -12,6 +12,7 @@ from rdkit.Chem import rdmolops, rdchem
 from dataclasses import dataclass, field
 from jobflow import Response, job, Flow, Maker
 from typing import Literal
+from ..PropertyCalculator import CalculateGlobalConceptualDFTProperties
 
 @dataclass
 class PropertyWorkflows(Maker):

@@ -1,10 +1,10 @@
-
 from dataclasses import dataclass, field
 from typing import Literal
 from rdkit.Chem import rdmolfiles, rdmolops, rdchem
 import json
 from icecream import ic
 import subprocess
+from itertools import chain
 
 
 @dataclass
@@ -232,7 +232,7 @@ class ORCACalculator:
         "m-xylene",
         "o-xylene",
         "p-xylene",
-        ""
+        "",
     ] = field(
         default=None,
     )
@@ -253,7 +253,7 @@ class ORCACalculator:
         "PAL16",
         "PAL32",
         "PAL64",
-        ""
+        "",
     ] = field(
         default=None,
     )
@@ -321,9 +321,9 @@ class ORCACalculator:
                         final_props["Loewdin_Population_Analysis"]["ATOMICCHARGES"],
                     )
                 ),
-                "Mayer Partial Charges [e]": final_props["Mayer_Population_Analysis"][
-                    "QA"
-                ],
+                "Mayer Partial Charges [e]": list(
+                    chain.from_iterable(final_props["Mayer_Population_Analysis"]["QA"])
+                ),
             },
             "bonds": {"Mayer Bond Order": bond_list},
         }
@@ -348,6 +348,7 @@ class ORCACalculator:
             keywords.append("KeepInts")
         if self.parallel is not None:
             keywords.append(self.parallel)
+        keywords.append(self.density_functional)
         rdmolfiles.MolToXYZFile(molecule, "input.xyz")
         if self.charge is None:
             self.charge = rdmolops.GetFormalCharge(molecule)
