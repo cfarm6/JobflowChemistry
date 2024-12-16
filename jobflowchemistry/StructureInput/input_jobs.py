@@ -49,7 +49,7 @@ class PubChemInput(StructureInput):
         with open("log", "w") as f:
             f.write(resp.content.decode("utf-8"))
         molecule = rdmolfiles.MolFromMolBlock(resp.content.decode("utf-8"), removeHs=False)
-        properties = {}
+        properties = {'cid': input}
         settings = {'Input Method': 'PubChem CID'}
         return molecule, properties, settings
 
@@ -64,7 +64,7 @@ class SmilesInput(StructureInput):
 
     def get_structure(self, smiles: str):
         molecule = rdmolfiles.MolFromSmiles(smiles)
-        properties = {}
+        properties = {'smiles': smiles}
         settings = {'Input Method': 'SMILES Input'}
         return molecule, properties, settings
 
@@ -79,7 +79,7 @@ class SmartsInput(StructureInput):
 
     def get_structure(self, smarts: str):
         molecule = rdmolfiles.MolFromSmarts(smarts)
-        properties = {}
+        properties = {'smarts': smarts}
         settings = {'Input Method': 'SMARTS Input'}
         return molecule, properties, settings
 

@@ -35,6 +35,7 @@ class EnergyCalculation(Maker):
                 output={
                     "structure": [x.output["structure"] for x in jobs],
                     "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
@@ -48,6 +49,7 @@ class EnergyCalculation(Maker):
                 output={
                     "structure": [x.output["structure"] for x in jobs],
                     "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,

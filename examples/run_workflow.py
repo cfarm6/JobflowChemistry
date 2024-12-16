@@ -58,8 +58,8 @@ flow = Flow(
         gen_job,
         tblite_job,
         aimnet2opt_job,
-        deprotonate_job,
-        ccs_job,
+        # deprotonate_job,
+        # ccs_job,
     ],
     name=str(75921),
 )

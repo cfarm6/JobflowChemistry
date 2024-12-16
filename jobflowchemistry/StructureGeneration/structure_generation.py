@@ -180,7 +180,10 @@ class CRESTDeprotonation(
 
         deprotonated_conformers = list(
             rdmolfiles.SDMolSupplier(
-                "deprotonated.sdf", sanitize=False, removeHs=False, strictParsing=False
+                "deprotonated.sdf", 
+                sanitize=False, 
+                removeHs=False, 
+                strictParsing=False
             )
         )
 
@@ -188,28 +191,31 @@ class CRESTDeprotonation(
             "updated.sdf",
         ) as f:
             for i, s in enumerate(deprotonated_conformers):
-                topo = rdchem.Mol(structure) # Structure with only single bonds
-                ic(i)
-                _s = rdchem.Mol(s)
-                for mol in [_s, topo]:
-                    for bond in mol.GetBonds():
-                        bond.SetStereo(rdchem.BondStereo.STEREOANY)
-                        bond.SetBondType(rdchem.BondType.SINGLE)
-                idxs = topo.GetSubstructMatch(_s)  # s_idx -> structure_idx
-                # Find the missing atom idx
-                for atom in structure.GetAtoms():
-                    if atom.GetIdx() in idxs:
-                        continue
-                    h_idx = atom.GetIdx()
-                    bond = atom.GetBonds()[0]
-                    begin_idx = bond.GetBeginAtomIdx()
-                    end_idx = bond.GetEndAtomIdx()
-                    other_idx = begin_idx
-                    if other_idx == h_idx:
-                        other_idx = end_idx
-                    s_idx = idxs.index(other_idx)
-                    s_atom = s.GetAtomWithIdx(s_idx)
-                    s_atom.SetFormalCharge(-1)
+                rdDetermineBonds.DetermineBonds(s, charge=-1)
+                # topo = rdchem.Mol(structure) # Structure with only single bonds
+                # _s = rdchem.Mol(s)
+                # ic(i)
+                # for mol in [_s, topo]:
+                #     for bond in mol.GetBonds():
+                #         bond.SetStereo(rdchem.BondStereo.STEREOANY)
+                #         bond.SetBondType(rdchem.BondType.SINGLE)
+                # idxs = topo.GetSubstructMatch(_s)  # s_idx -> structure_idx
+                # # Find the missing atom idx
+                # for atom in topo.GetAtoms():
+                #     if atom.GetIdx() in idxs:
+                #         continue
+                #     h_idx = atom.GetIdx()
+                #     bond = atom.GetBonds()[0]
+                #     begin_idx = bond.GetBeginAtomIdx()
+                #     end_idx = bond.GetEndAtomIdx()
+                #     other_idx = begin_idx
+                #     if other_idx == h_idx:
+                #         other_idx = end_idx
+                #     ic(other_idx)
+                #     ic(idxs)
+                #     s_idx = idxs.index(other_idx)
+                #     s_atom = s.GetAtomWithIdx(s_idx)
+                #     s_atom.SetFormalCharge(-1)
                 f.write(s)
         structures = list(rdmolfiles.SDMolSupplier("updated.sdf", removeHs=False, sanitize=False))
         if len(structures) == 1:

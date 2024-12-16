@@ -34,6 +34,7 @@ class GeometryOptimization(Maker):
                 output={
                     "structure": [x.output["structure"] for x in jobs],
                     "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
@@ -47,6 +48,7 @@ class GeometryOptimization(Maker):
                 output={
                     "structure": [x.output["structure"] for x in jobs],
                     "settings": Settings({}),
+                    "files": [x.output["files"] for x in jobs],
                     "properties": [x.output["properties"] for x in jobs],
                 },
                 addition=jobs,
@@ -63,8 +65,7 @@ class GeometryOptimization(Maker):
             for k,v in properties["bond"].items():
                 bond = structure.GetBondBetweenAtoms(v[0], v[1])
                 bond.SetDoubleProp(k, float(v[2]))
-        
-            
+
         return Response(
             output={
                 "structure": Structure(structure),
