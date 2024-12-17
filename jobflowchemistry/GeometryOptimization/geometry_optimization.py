@@ -3,8 +3,9 @@ from ..Calculators import ORCACalculator
 from ..Calculators.TBLite import TBLiteCalculator
 from ..Calculators.ASECalculator import ASECalculator
 from ..Calculators.AimNet2 import AimNet2Calculator
+from ..Calculators.xTBCalculator import xTBCalculator
 
-from dataclasses import field
+from dataclasses import field, fields
 from dataclasses import dataclass
 # from pydantic.dataclasses import dataclass
 from typing import Literal
@@ -54,6 +55,7 @@ class GeometryOptimization(Maker):
         structure, properties, settings = self.optimize_structure(structure)
         if "global" in properties:
             for k,v in properties["global"].items():
+                if type(v) is list: continue
                 structure.SetDoubleProp(k, float(v), computed=True)
         if "atomic" in properties:
             for k,v in properties["atomic"].items():
@@ -61,8 +63,10 @@ class GeometryOptimization(Maker):
                     atom.SetDoubleProp(k, float(v[i]))
         if "bond" in properties:
             for k,v in properties["bond"].items():
-                bond = structure.GetBondBetweenAtoms(v[0], v[1])
-                bond.SetDoubleProp(k, float(v[2]))
+                for i in v:
+                    bond = structure.GetBondBetweenAtoms(i['atom1'], i['atom2'])
+                    if bond is None: continue
+                    bond.SetDoubleProp(k, float(i['value']))
         
             
         return Response(
@@ -117,3 +121,27 @@ class ORCAOptimization(GeometryOptimization, ORCACalculator):
         settings = super().get_settings()
         properties = super().get_properties(molecule)
         return molecule, properties, settings
+
+
+@dataclass
+class xTBOptimization(xTBCalculator, GeometryOptimization):
+    name: str = "xTB Optimizer"
+    def __post_init__(self):
+        # List of prefixes to delete
+        prefixes = ["md_", "thermo_", "md_", "hess_", "modef_", "cube_"]
+
+        # Remove attributes starting with any of the prefixes
+        for field in fields(self):
+            if any(field.name.startswith(prefix) for prefix in prefixes):
+                delattr(self, field.name)
+    def set_keywords(self):
+        super().set_keywords()
+        self.keywords.append("--opt")
+        return
+    def optimize_structure(self, structure: Structure):
+        self.set_keywords()
+        self.run_xtb(structure)
+        properties = self.get_properties(structure)
+        mol = rdmolfiles.MolFromMolFile("xtbopt.mol", sanitize=False, removeHs=False)
+        settings = self.get_settings()
+        return mol, properties, settings

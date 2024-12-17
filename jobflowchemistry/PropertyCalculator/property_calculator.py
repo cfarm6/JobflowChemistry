@@ -20,7 +20,7 @@ from ..outputs import Properties, Settings
 
 @dataclass
 class PropertyCalculator(Maker):
-    name: str = "Property Calculator"
+    name: str = "Property Calculation"
 
     def get_settings(self):
         raise NotImplementedError
@@ -32,7 +32,6 @@ class PropertyCalculator(Maker):
     def make(self, structure: Structure):
         # molecule = pickle.loads(molecule)
         if type(structure) is list:
-            ic(len(structure))
             jobs = [self.make(s) for s in structure]
             return Response(
                 output={
@@ -45,7 +44,6 @@ class PropertyCalculator(Maker):
             )
         if structure.GetNumConformers() > 1:
             jobs = []
-            ic(structure.GetNumConformers())
             for confId in range(structure.GetNumConformers()):
                 s = Structure(rdchem.Mol(structure, confId=confId))
                 jobs.append(self.make(s))
@@ -59,11 +57,11 @@ class PropertyCalculator(Maker):
                 addition=jobs,
             )
         resp = self.get_properties(structure)
-        ic(resp)
         structure = resp[0]
         properties = resp[1]
         if "global" in properties:
             for k,v in properties["global"].items():
+                if type(v) is list: continue
                 structure.SetDoubleProp(k, float(v), computed=True)
         if "atomic" in properties:
             for k,v in properties["atomic"].items():
@@ -88,7 +86,7 @@ class PropertyCalculator(Maker):
 
 @dataclass
 class CollisionCrossSectionCalculator(PropertyCalculator):
-    name: str = "Collision Cross Section Calculator"
+    name: str = "Collision Cross Section Calculation"
     pass
 
 

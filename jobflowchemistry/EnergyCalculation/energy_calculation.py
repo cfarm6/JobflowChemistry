@@ -1,5 +1,5 @@
 # from pydantic.dataclasses import dataclass
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from jobflow import Response, job, Maker
 import pickle
 import ase
@@ -11,6 +11,8 @@ from ..Calculators import ORCACalculator
 from ..Calculators.ASECalculator import ASECalculator
 from ..Calculators.TBLite import TBLiteCalculator
 from ..Calculators.AimNet2 import AimNet2Calculator
+from ..Calculators.xTBCalculator import xTBCalculator
+from ..Calculators.PTBCalculator import PTBCalculator
 from ..task_node import TaskNode
 from typing import Union
 from ..Structure import Structure
@@ -19,7 +21,7 @@ from ..outputs import Settings, Properties
 
 @dataclass
 class EnergyCalculation(Maker):
-    name: str = "Energy Calculator"
+    name: str = "Single Point Calculation"
 
     def get_settings(self):
         raise NotImplementedError
@@ -55,19 +57,22 @@ class EnergyCalculation(Maker):
 
         properties = self.calculate_energy(structure)
         if "global" in properties:
-            for k,v in properties["global"].items():
-                if type(v) is list: 
+            for k, v in properties["global"].items():
+                if type(v) is list:
                     structure.SetProp(k, ",".join([str(x) for x in v]), computed=True)
                     continue
                 structure.SetDoubleProp(k, float(v), computed=True)
         if "atomic" in properties:
-            for k,v in properties["atomic"].items():
+            for k, v in properties["atomic"].items():
                 for i, atom in enumerate(structure.GetAtoms()):
                     atom.SetDoubleProp(k, float(v[i]))
         if "bond" in properties:
-            for k,v in properties["bond"].items():
-                bond = structure.GetBondBetweenAtoms(v[0], v[1])
-                bond.SetDoubleProp(k, float(v[2]))
+            for k, v in properties["bond"].items():
+                for i in v:
+                    bond = structure.GetBondBetweenAtoms(i["atom1"], i["atom2"])
+                    if bond is None:
+                        continue
+                    bond.SetDoubleProp(k, float(i["value"]))
         settings = self.get_settings()
         return Response(
             output={
@@ -110,5 +115,32 @@ class ORCAEnergyCalculation(ORCACalculator, EnergyCalculation):
 
     def calculate_energy(self, structure: Structure):
         self.run_orca(structure)
+        properties = self.get_properties(structure)
+        return properties
+
+
+@dataclass
+class xTBEnergyCalculation(xTBCalculator, EnergyCalculation):
+    name: str = "xTB Energy Calculation"
+
+    def __post_init__(self):
+        # List of prefixes to delete
+        prefixes = ["md_", "opt_", "thermo_", "md_", "hess_", "modef_", "cube_"]
+
+        # Remove attributes starting with any of the prefixes
+        for field in fields(self):
+            if any(field.name.startswith(prefix) for prefix in prefixes):
+                delattr(self, field.name)
+
+    def calculate_energy(self, structure: Structure):
+        self.run_xtb(structure)
+        properties = self.get_properties(structure)
+        return properties
+
+@dataclass
+class PTBCalculation(PTBCalculator, EnergyCalculation):
+    name: str = "PTB Energy Calculation"
+    raman = False
+    def calculate_energy(self, structure: Structure):
         properties = self.get_properties(structure)
         return properties

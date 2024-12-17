@@ -6,6 +6,9 @@ from .StructureGeneration import *
 from .StructureInput import *
 from .Utilities import *
 from .PropertyWorkflows import *
+from .SpectraCalculator import *
+from .HessianCalculation import *
+
 # from .Biological import *
 from rdkit.Chem import rdchem
 rdchem.SetDefaultPickleProperties(rdchem.PropertyPickleOptions.AllProps)
