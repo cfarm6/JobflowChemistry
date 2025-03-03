@@ -27,30 +27,30 @@ class PTBCalculator():
 
     def get_properties(self, molecule: rdchem.Mol):
         self._run_ptb(molecule)
-        properties = {"global": {}, "atomic": {}, "bond": {}}
+        properties = {"Global": {}, "Atomic": {}, "Bond": {}}
         fix_json_file("xtbout.json", "xtbout.json")
         with open("xtbout.json", "r") as f:
             _props = json.load(f)
-        properties["global"]["Total Energy [eV]"] = _props["total energy"]
-        properties["global"]["HOMO-LUMO Gap [eV]"] = _props["HOMO-LUMO gap / eV"]
-        properties["global"]["Electronic Energy [eV]"] = _props["electronic energy"]
-        properties["global"]["Dipole [au]"] = _props["dipole / a.u."]
-        properties["global"]["Orbital Energies [eV]"] = _props["orbital energies / eV"]
-        properties["global"]["Occupations [-]"] = _props["fractional occupation"]
-        properties["atomic"]["Partial Charges [e]"] = _props["partial charges"]
+        properties["Global"]["Total Energy [eV]"] = _props["total energy"]
+        properties["Global"]["HOMO-LUMO Gap [eV]"] = _props["HOMO-LUMO gap / eV"]
+        properties["Global"]["Electronic Energy [eV]"] = _props["electronic energy"]
+        properties["Global"]["Dipole [au]"] = _props["dipole / a.u."]
+        properties["Global"]["Orbital Energies [eV]"] = _props["orbital energies / eV"]
+        properties["Global"]["Occupations [-]"] = _props["fractional occupation"]
+        properties["Atomic"]["Partial Charges [e]"] = _props["partial charges"]
         if self.ceh:
-            properties["atomic"]["Charge Extended Huckel Charge [e]"] = []
+            properties["Atomic"]["Charge Extended Huckel Charge [e]"] = []
             with open("ceh.charges") as f:
                 for line in f.readlines():
                     if re.match(r"^\s*\d", line):
-                        properties["atomic"][
+                        properties["Atomic"][
                             "Charge Extended Huckel Charge [e]"
                         ].append(float(line.split()[0]))
         if "bond orders" in _props:
-            properties["bond"]["Bond Order [-]"] = []
+            properties["Bond"]["Bond Order [-]"] = []
             for bond in _props["bond orders"]:
                 atom1, atom2, _wbo = bond
-                properties["bond"]["Bond Order [-]"].append(
+                properties["Bond"]["Bond Order [-]"].append(
                     {
                         "atom1": int(atom1) - 1,
                         "atom2": int(atom2) - 1,

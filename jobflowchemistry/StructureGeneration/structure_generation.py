@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from typing import Literal
 import tomli_w
 import os
-# from icecream import ic
 
 from jobflow import job, Flow, Maker, Response
 from rdkit.Chem import rdDistGeom, rdmolfiles, rdchem, rdmolops, rdDetermineBonds
@@ -269,7 +268,8 @@ class RDKitGeneration(StructureGeneration):
             if key == "name" or key == "method" or value is None:
                 continue
             setattr(params, key, value)
-        rdDistGeom.EmbedMultipleConfs(structure, 1, params)
+        ret = rdDistGeom.EmbedMultipleConfs(structure, 1, params)
+        print("ConfIds", ret)
         return structure
 
     def settings(self):

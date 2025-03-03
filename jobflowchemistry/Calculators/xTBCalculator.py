@@ -5,22 +5,25 @@ import json
 import subprocess
 import re
 
+
 @dataclass
-class xTBCalculator():
+class xTBCalculator:
     name: str = "xTB Calculator"
     executable: str = "xtb"
     chrg: int = 0
     spin: int = 0
     cma: bool = True
-    keyword_ceh:bool = False
+    keyword_ceh: bool = False
     gfn_method: Literal[1, 2] = 2
     gfn_scc: bool = True
     gfn_periodic: bool = False
     gfn_dispscale: float = 1.0
     scc_maxiterations: int = 250
-    scc_temp:float = 300.0
-    scc_broydamp:float = 0.4
-    opt_optlevel: Literal["crude", "sloppy", "loose", "normal", "tight", "verytight", "extreme"] = "normal"
+    scc_temp: float = 300.0
+    scc_broydamp: float = 0.4
+    opt_optlevel: Literal[
+        "crude", "sloppy", "loose", "normal", "tight", "verytight", "extreme"
+    ] = "normal"
     opt_engine: Literal["rf", "lbfgs", "inertial"] = "rf"
     opt_microcycle: int = 25
     opt_maxcycle: int = 0
@@ -34,34 +37,34 @@ class xTBCalculator():
     opt_rcut: float = 8.3666002653407556
     opt_exact_rf: bool = False
     opt_average_conv: bool = False
-    thermo_temp: float =298.14999999999998
-    thermo_sthr: float =50.000000000000000
-    thermo_imagthr: float =-20.000000000000000
-    thermo_scale: float =1.0000000000000000
-    md_temp:float=298.14999999999998
-    md_time:float=50.000000000000000
-    md_dump:float=50.000000000000000
-    md_velo:int=0
-    md_nvt:Literal[1,0]=1
-    md_skip:int=500
-    md_step:float=None
-    md_hmass:int=None
-    md_shake:int=None
-    md_sccacc:float=2.0000000000000000
-    md_forcewrrestart:bool=False
-    hess_sccacc:float=0.29999999999999999
-    hess_step:float=0.50000000000000001E-2
-    hess_scale:float=1.0000000000000000
-    modef_n:int=31
-    modef_step:float=1.0000000000000000
-    modef_updat:float=0.20000000000000001
-    modef_local:Literal[0,1]=0
-    modef_vthr:float=0.0000000000000000
-    modef_prj:int=0
-    modef_mode:int=0
-    cube_step:float=0.40000000000000002
-    cube_pthr:float=0.50000000000000003E-1
-    cube_boff:float = 3.0
+    thermo_temp: float = 298.14999999999998
+    thermo_sthr: float = 50.000000000000000
+    thermo_imagthr: float = -20.000000000000000
+    thermo_scale: float = 1.0000000000000000
+    md_temp: float = 298.14999999999998
+    md_time: float = 50.000000000000000
+    md_dump: float = 50.000000000000000
+    md_velo: int = 0
+    md_nvt: Literal[1, 0] = 1
+    md_skip: int = 500
+    md_step: float = None
+    md_hmass: int = None
+    md_shake: int = None
+    md_sccacc: float = 2.0000000000000000
+    md_forcewrrestart: bool = False
+    hess_sccacc: float = 0.29999999999999999
+    hess_step: float = 0.50000000000000001e-2
+    hess_scale: float = 1.0000000000000000
+    modef_n: int = 31
+    modef_step: float = 1.0000000000000000
+    modef_updat: float = 0.20000000000000001
+    modef_local: Literal[0, 1] = 0
+    modef_vthr: float = 0.0000000000000000
+    modef_prj: int = 0
+    modef_mode: int = 0
+    cube_step: float = 0.40000000000000002
+    cube_pthr: float = 0.50000000000000003e-1
+    cube_boff: float = 3.0
     solvent: Literal[
         "acetone",
         "acetonitrile",
@@ -304,10 +307,14 @@ class xTBCalculator():
     write_modef: bool = False
     write_gbsa: bool = False
     write_json: bool = True
+
     # Theory
     def __post_init__(self):
         if self.solvent and self.cpcmx:
-            raise ValueError("Both CPCMX and ALPB/COSMO Solvation models cannot be used simultaneously")
+            raise ValueError(
+                "Both CPCMX and ALPB/COSMO Solvation models cannot be used simultaneously"
+            )
+
     def get_settings(self):
         settings = {}
         for key in self.__dict__.keys():
@@ -315,38 +322,50 @@ class xTBCalculator():
         return settings
 
     def get_properties(self, molecule: rdchem.Mol):
-        properties = {"global":{}, "atomic":{}, "bond":{}}
-        with open('xtbout.json', 'r') as f:
+        properties = {"Global": {}, "Atomic": {}, "Bond": {}}
+        with open("xtbout.json", "r") as f:
             _props = json.load(f)
-        properties["global"]["HOMO-LUMO Gap [eV]"] = _props["HOMO-LUMO gap / eV"]
-        properties["global"]["Total Energy [eV]"] = _props["total energy"]
-        properties["global"]["Electronic Energy [eV]"] = _props["electronic energy"]
-        properties["global"]["Dipole [au]"] = _props["dipole / a.u."]
-        properties["global"]["Orbital Energies [eV]"] = _props["orbital energies / eV"]
-        properties["global"]["Occupations [-]"] = _props["fractional occupation"]
-        properties["atomic"]["Mulliken Partial Charges [e]"] = _props["partial charges"]
-        properties["bond"]["Wiberg Bond Order [-]"] = []
+        properties["Global"]["HOMO-LUMO Gap [eV]"] = _props["HOMO-LUMO gap / eV"]
+        properties["Global"]["Total Energy [eV]"] = _props["total energy"]
+        properties["Global"]["Electronic Energy [eV]"] = _props["electronic energy"]
+        properties["Global"]["Dipole [au]"] = {
+            "x": _props["dipole / a.u."][0],
+            "y": _props["dipole / a.u."][1],
+            "z": _props["dipole / a.u."][2],
+        }
+        properties["Global"]["Orbitals"] = [
+            {"Occupation [-]": x[1], "Orbital Energy [eV]": x[0]}
+            for x in zip(
+                _props["orbital energies / eV"], _props["fractional occupation"]
+            )
+        ]
+        properties["Atomic"]["Mulliken Partial Charges [e]"] = _props["partial charges"]
+        properties["Bond"]["Wiberg Bond Order [-]"] = []
         if self.keyword_ceh:
-            properties["atomic"]["Charge Extended Huckel Charge [e]"] = []
+            properties["Atomic"]["Charge Extended Huckel Charge [e]"] = []
             with open("ceh.charges") as f:
                 for line in f.readlines():
                     if re.match(r"^\s*\d", line):
-                        properties["atomic"]["Charge Extended Huckel Charge [e]"].append(float(line.split()[0]))
-        with open("wbo" ,"r") as f:
+                        properties["Atomic"][
+                            "Charge Extended Huckel Charge [e]"
+                        ].append(float(line.split()[0]))
+        with open("wbo", "r") as f:
             wbo = f.readlines()
             for line in wbo:
                 atom1, atom2, _wbo = line.split()
-                properties["bond"]["Wiberg Bond Order [-]"].append({'atom1': int(atom1)-1, 'atom2': int(atom2)-1, 'value': float(_wbo)})
+                properties["Bond"]["Wiberg Bond Order [-]"].append(
+                    {
+                        "atom1": int(atom1) - 1,
+                        "atom2": int(atom2) - 1,
+                        "value": float(_wbo),
+                    }
+                )
         return properties
 
     def set_keywords(self):
-        self.keywords = [
-            self.executable,
-            "input.mol",
-            "--input",
-            "xtb.input"
-        ]
+        self.keywords = [self.executable, "input.mol", "--input", "xtb.input", "--molden"]
         return
+
     def run_xtb(self, molecule: rdchem.Mol):
         rdmolfiles.MolToV3KMolFile(molecule, "input.mol")
 
@@ -376,14 +395,15 @@ class xTBCalculator():
             for attr, value in self.__dict__.items():
                 if "_" in attr:  # Only consider fields with "_"
                     key, subkey = attr.split("_", 1)
-                    if key=="keyword":continue
+                    if key == "keyword":
+                        continue
                     if key == "solvation":
                         if self.solvation_solvent is None:
                             continue
                     if key not in grouped_fields:
                         grouped_fields[key] = []
                     grouped_fields[key].append(f"{subkey.replace("_", " ")}={value}")
-            document_lines=[]
+            document_lines = []
             for key, subkeys in grouped_fields.items():
                 document_lines.append(f"${key}")
                 document_lines.extend(subkeys)

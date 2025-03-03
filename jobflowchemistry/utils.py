@@ -2,10 +2,13 @@ from rdkit.Chem import rdchem, rdDetermineBonds
 from ase import Atoms
 import re
 import json
+
+
 def rdkit2ase(molecule: rdchem.Mol) -> Atoms:
     atomic_numbers = [atom.GetAtomicNum() for atom in molecule.GetAtoms()]
     positions = molecule.GetConformer().GetPositions()
     return Atoms(numbers=atomic_numbers, positions=positions)
+
 
 def ase2rdkit(atoms: Atoms, mol: rdchem.Mol = None):
     if mol is None:
@@ -17,9 +20,10 @@ def ase2rdkit(atoms: Atoms, mol: rdchem.Mol = None):
         mol.AddConformer(rdchem.Conformer(len(atomic_numbers)), assignId=True)
     positions = atoms.get_positions()
     conf = mol.GetConformer()
-    for i,pos in enumerate(positions):
+    for i, pos in enumerate(positions):
         conf.SetAtomPosition(i, pos)
     return mol
+
 
 def parse_gaussian_output(file_path):
     # Initialize data structures
@@ -132,11 +136,11 @@ def parse_gaussian_output(file_path):
                     if str(current_mode + i) not in displacement_vectors:
                         displacement_vectors[str(current_mode + i)] = {}
                     for xyz in zip(xyz):
-                        displacement_vectors[str(current_mode + i)][str(atom_id)] = [
-                            x[i],
-                            y[i],
-                            z[i],
-                        ]
+                        displacement_vectors[str(current_mode + i)][str(atom_id)] = {
+                            "x": x[i],
+                            "y": y[i],
+                            "z": z[i],
+                        }
     return (
         frequencies,
         reduced_masses,

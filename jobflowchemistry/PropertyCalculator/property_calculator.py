@@ -58,16 +58,16 @@ class PropertyCalculator(Maker):
         resp = self.get_properties(structure)
         structure = resp[0]
         properties = resp[1]
-        if "global" in properties:
-            for k,v in properties["global"].items():
+        if "Global" in properties:
+            for k,v in properties["Global"].items():
                 if type(v) is list: continue
                 structure.SetDoubleProp(k, float(v), computed=True)
-        if "atomic" in properties:
-            for k,v in properties["atomic"].items():
+        if "Atomic" in properties:
+            for k,v in properties["Atomic"].items():
                 for i, atom in enumerate(structure.GetAtoms()):
                     atom.SetDoubleProp(k, float(v[i]))
-        if "bond" in properties:
-            for k,v in properties["bond"].items():
+        if "Bond" in properties:
+            for k,v in properties["Bond"].items():
                 bond = structure.GetBondBetweenAtoms(v[0], v[1])
                 bond.SetDoubleProp(k, float(v[2]))
 
@@ -167,7 +167,7 @@ class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
             )
             standard_deviation = standard_deviation_percent / 100 * CCS
         properties = {
-            "global": {
+            "Global": {
                 "CCS [A^2]": CCS,
                 "CCS Standard Deviation [A^2]": standard_deviation,
                 "Mobility": 1 / mobility,
@@ -226,4 +226,4 @@ class QupKakePrediction(PropertyCalculator):
             mp=self.mp,
         )
         pka_predictions = qpka.predict_pka(pair_dataset, pka_model)
-        return structure, {"global": {"pKa": pka_predictions.tolist()}}
+        return structure, {"Global": {"pKa": pka_predictions.tolist()}}

@@ -28,7 +28,9 @@ dependencies = [
     "monty>=2024.10.21",
     "jobflow>=0.1.19",
     "numpy>=2.0.0",
-    "tomli-w>=1.1.0"
+    "tomli-w>=1.1.0",
+    "pyscf>=2.7.0",
+    "requests"
 ]
 
 # Update the urls once the hosting is set up.

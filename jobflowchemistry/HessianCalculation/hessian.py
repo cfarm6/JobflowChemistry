@@ -53,17 +53,17 @@ class HessianCalculation(Maker):
         properties = self.calculate_hessian(structure)
         settings = self.get_settings()
 
-        if "global" in properties:
-            for k, v in properties["global"].items():
-                if type(v) is list:
+        if "Global" in properties:
+            for k, v in properties["Global"].items():
+                if type(v) is list or type(v) is dict:
                     continue
                 structure.SetDoubleProp(k, float(v), computed=True)
-        if "atomic" in properties:
-            for k, v in properties["atomic"].items():
+        if "Atomic" in properties:
+            for k, v in properties["Atomic"].items():
                 for i, atom in enumerate(structure.GetAtoms()):
                     atom.SetDoubleProp(k, float(v[i]))
-        if "bond" in properties:
-            for k, v in properties["bond"].items():
+        if "Bond" in properties:
+            for k, v in properties["Bond"].items():
                 for i in v:
                     bond = structure.GetBondBetweenAtoms(i["atom1"], i["atom2"])
                     if bond is None:
@@ -114,12 +114,10 @@ class xTBHessian(xTBCalculator, HessianCalculation):
             depolarization,
             displacement_vectors,
         ) = parse_gaussian_output("g98.out")
-        properties["spectra"] = {"Normal Modes": {
+        properties["Spectra"] = {"Normal Modes": {
             "Frequency [cm^-1]": frequencies,
             "Reduced Masses [amu]": reduced_masses,
-            "Force Constants [mDyne/A]": force_constants,
             "IR Intensities [km/mol]": ir_intensities,
-            "Raman Activity [A^4/amu]": raman_activity,
             "Displacements": displacement_vectors
         }}
         return properties

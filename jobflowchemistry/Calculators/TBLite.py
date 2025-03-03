@@ -42,11 +42,11 @@ class TBLiteCalculator(ASECalculator):
         charges = atoms.get_charges()
         dipole = atoms.get_dipole_moment()
         properties = {
-            "global": {
+            "Global": {
                 "Total Energy [eV]": total_energy,
                 "Dipole Moment [D]": list(dipole),
             },
-            "atomic":{
+            "Atomic":{
                 "Mulliken Partial Charges [e]": charges,
             }
         }

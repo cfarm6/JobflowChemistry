@@ -239,8 +239,8 @@ class ORCACalculator:
     )
     keepdens: bool = False
     keepints: bool = False
-    density_functional: str = "B3LYP"
-    basis_set: str = "6-31G"
+    density_functional: str = None
+    basis_set: str = None
     multiplicity: int = None
     charge: int = None
     parallel: Literal[
@@ -297,7 +297,7 @@ class ORCACalculator:
         for mbo, bond in zip(mayer_bond_orders, bonds):
             bond_list.append({"atom1": bond[0], "atom2": bond[1], "mbo": mbo})
         properties = {
-            "global": {
+            "Global": {
                 "Total Energy [eV]": final_props["SCF_Energy"]["SCF_ENERGY"]
                 * 27.2113834,
                 "Dipole Moment [D]": list(
@@ -309,7 +309,7 @@ class ORCACalculator:
                 "Dipole Magnitude [D]": final_props["Dipole_Moment"]["DIPOLEMAGNITUDE"]
                 * 2.541746473,
             },
-            "atomic": {
+            "Atomic": {
                 "Mulliken Partial Charges [e]": list(
                     map(
                         lambda x: x[0],
@@ -326,7 +326,7 @@ class ORCACalculator:
                     chain.from_iterable(final_props["Mayer_Population_Analysis"]["QA"])
                 ),
             },
-            "bonds": {"Mayer Bond Order": bond_list},
+            "Bond": {"Mayer Bond Order": bond_list},
         }
         return properties
 

@@ -70,7 +70,7 @@ class ConceptualDFTWorkflow(PropertyWorkflows):
 class CollisionCrossSectionWorkflow(PropertyWorkflows):
     name: str = "Collision Cross Section Workflow"
     temperature: float = 300.0
-    property_type: Literal["global"] = "global"
+    property_type: Literal["Global"] = "Global"
     property: Literal["CCS [A^2]"] = "CCS [A^2]"
     energy_name: str = "Total Energy [eV]"
 

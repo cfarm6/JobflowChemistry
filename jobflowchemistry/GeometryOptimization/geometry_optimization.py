@@ -50,16 +50,16 @@ class GeometryOptimization(Maker):
                 replace=jobs,
             )
         structure, properties, settings = self.optimize_structure(structure)
-        if "global" in properties:
-            for k,v in properties["global"].items():
+        if "Global" in properties:
+            for k,v in properties["Global"].items():
                 if type(v) is list: continue
                 structure.SetDoubleProp(k, float(v), computed=True)
-        if "atomic" in properties:
-            for k,v in properties["atomic"].items():
+        if "Atomic" in properties:
+            for k,v in properties["Atomic"].items():
                 for i, atom in enumerate(structure.GetAtoms()):
                     atom.SetDoubleProp(k, float(v[i]))
-        if "bond" in properties:
-            for k,v in properties["bond"].items():
+        if "Bond" in properties:
+            for k,v in properties["Bond"].items():
                 for i in v:
                     bond = structure.GetBondBetweenAtoms(i['atom1'], i['atom2'])
                     if bond is None: continue

@@ -26,8 +26,8 @@ class AimNet2Calculator(ASECalculator):
         energy = atoms.get_total_energy()[0]
         charge = atoms.get_charges()
         properties = {
-            "global": {"Total Energy [eV]": energy},
-            "atomic": {"AimNet2 Partial Charges [e]": charge},
+            "Global": {"Total Energy [eV]": energy},
+            "Atomic": {"AimNet2 Partial Charges [e]": charge},
         }
 
         return properties
@@ -39,8 +39,16 @@ class AimNet2Calculator(ASECalculator):
             self.charge = rdmolops.GetFormalCharge(molecule)
         atoms = rdkit2ase(molecule)
         atoms.calc = AIMNet2ASE(self.model)
+
+        aimnet2_atomtypes = [1, 6, 7, 8, 9, 17, 16, 5, 14, 15, 33, 34, 35, 53]
+        atomic_nums = atoms.get_atomic_numbers()
+        if not all([atom in aimnet2_atomtypes for atom in atomic_nums]):
+            raise ValueError(
+                    f"Unsupport atomtype by AimNet2. Supported atom types are {aimnet2_atomtypes}"
+                )
         if self.charge is not None:
             atoms.calc.set_charge(self.charge)
         if self.multiplicity is not None:
             atoms.calc.set_mult(self.multiplicity)
+
         return atoms

@@ -26,9 +26,9 @@ class CalculateGlobalConceptualDFTProperties(ConceptualDFTProperties):
         properties_cation: Properties,
         properties_anion: Properties,
     ):
-        neutral_state_energy = properties_neutral["global"]["Total Energy [eV]"]
-        cation_state_energy = properties_cation["global"]["Total Energy [eV]"]
-        anion_state_energy = properties_anion["global"]["Total Energy [eV]"]
+        neutral_state_energy = properties_neutral["Global"]["Total Energy [eV]"]
+        cation_state_energy = properties_cation["Global"]["Total Energy [eV]"]
+        anion_state_energy = properties_anion["Global"]["Total Energy [eV]"]
         vertical_ionization_potential = anion_state_energy - neutral_state_energy
         vertical_eletron_affinity = neutral_state_energy - cation_state_energy
         mulliken_electronegativity = (
@@ -40,7 +40,7 @@ class CalculateGlobalConceptualDFTProperties(ConceptualDFTProperties):
         elctrophilicity_index = chemical_potential**2 / 2 / hardness
 
         properties = {
-            "global": {
+            "Global": {
                 "Vertical Ionization Potential [eV]": vertical_ionization_potential,
                 "Vertical Electron Affinity [eV]": vertical_eletron_affinity,
                 "Mulliken Electronegativity [eV]": mulliken_electronegativity,
@@ -115,7 +115,7 @@ class xTBVerticalElectronAffinityAndIonizationPotential(ConceptualDFTProperties)
         elctrophilicity_index = chemical_potential**2 / 2 / hardness
 
         return structure, {
-            "global": {
+            "Global": {
                 "Vertical Ionization Potential [eV]": vertical_ionization_potential,
                 "Vertical Electron Affinity [eV]": vertical_eletron_affinity,
                 "Mulliken Electronegativity [eV]": mulliken_electronegativity,
@@ -154,11 +154,11 @@ class xTBFukuiIndices(ConceptualDFTProperties):
         # Execute!
         subprocess.call(" ".join(command), shell=True)
         # Process output file
-        properties = {"atomic": {}}
+        properties = {"Atomic": {}}
         in_fukui = False
-        properties["atomic"]["Fukui + [-]"] = []
-        properties["atomic"]["Fukui - [-]"] = []
-        properties["atomic"]["Fukui 0 [-]"] = []
+        properties["Atomic"]["Fukui + [-]"] = []
+        properties["Atomic"]["Fukui - [-]"] = []
+        properties["Atomic"]["Fukui 0 [-]"] = []
         pattern = re.compile(r"^\s*(\d+\w)\s+([\d\.-]+)\s+([\d\.-]+)\s+([\d\.-]+)")
         with open("log.out", "r") as f:
             for line in f:
@@ -168,13 +168,13 @@ class xTBFukuiIndices(ConceptualDFTProperties):
                 if in_fukui:
                     match = pattern.match(line)
                     if match:
-                        properties["atomic"]["Fukui + [-]"].append(
+                        properties["Atomic"]["Fukui + [-]"].append(
                             float(match.group(2))
                         )
-                        properties["atomic"]["Fukui - [-]"].append(
+                        properties["Atomic"]["Fukui - [-]"].append(
                             float(match.group(3))
                         )
-                        properties["atomic"]["Fukui 0 [-]"].append(
+                        properties["Atomic"]["Fukui 0 [-]"].append(
                             float(match.group(4))
                         )
                     else:
