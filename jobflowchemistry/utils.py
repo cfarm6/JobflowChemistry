@@ -6,6 +6,7 @@ import json
 
 def rdkit2ase(molecule: rdchem.Mol) -> Atoms:
     atomic_numbers = [atom.GetAtomicNum() for atom in molecule.GetAtoms()]
+    print("CONFS", molecule.GetNumConformers())
     positions = molecule.GetConformer().GetPositions()
     return Atoms(numbers=atomic_numbers, positions=positions)
 

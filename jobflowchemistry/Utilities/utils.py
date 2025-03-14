@@ -41,11 +41,12 @@ class BoltzmannWeighting(Utilities):
         # molecule = pickle.loads(molecule)
         if type(structure) is Structure:
             settings = self.get_settings()
-            if self.property_type == "global":
-                prop = structure.GetProp(self.property, autoConvert=True)
+            
+            prop = structure.GetProp(self.property, autoConvert=True)
             properties = {
                 self.property_type: {f"Boltzmann Weighted {self.property}": prop}
             }
+            print("DONE")
             return Response(
                 output={
                     "structure": Structure(structure),
@@ -61,8 +62,8 @@ class BoltzmannWeighting(Utilities):
         energy = np.array(energy)
         energy = energy - np.min(energy)
 
-        if self.property_type == "global":
-            prop = [s.GetProp(self.property, autoConvert=True) for s in structure]
+        # if self.property_type == "global":
+        prop = [s.GetProp(self.property, autoConvert=True) for s in structure]
 
         prop = np.array(prop)
         kb = 8.617333262e-5  # eV/K
