@@ -4,6 +4,7 @@ from rdkit.Chem import rdmolfiles, rdmolops, rdchem
 import json
 import subprocess
 from itertools import chain
+from ase import io
 
 
 @dataclass
@@ -276,58 +277,62 @@ class ORCACalculator:
         return settings
 
     def get_properties(self, molecule: rdchem.Mol):
-        with open(f"{self.base_name}.property.json", "r") as f:
-            properties = json.load(f)
-        geometry_keys = list(
-            filter(lambda x: "Geometry" in x, properties.keys()),
-        )
-        final_geom = max(map(lambda x: int(x.split("_")[1]), geometry_keys))
-
-        final_props = properties[f"Geometry_{final_geom}"]
-        mayer_bond_orders = list(
-            map(lambda x: x[0], final_props["Mayer_Population_Analysis"]["BONDORDERS"])
-        )
-        bonds = list(
-            map(
-                lambda x: [x[0], x[2]],
-                final_props["Mayer_Population_Analysis"]["COMPONENTS"],
+        properties = {}
+        try:
+            with open(f"{self.base_name}.property.json", "r") as f:
+                properties = json.load(f)
+            geometry_keys = list(
+                filter(lambda x: "Geometry" in x, properties.keys()),
             )
-        )
-        bond_list = []
-        for mbo, bond in zip(mayer_bond_orders, bonds):
-            bond_list.append({"atom1": bond[0], "atom2": bond[1], "value": mbo})
-        properties = {
-            "Global": {
-                "Total Energy [eV]": final_props["SCF_Energy"]["SCF_ENERGY"]
-                * 27.2113834,
-                "Dipole Moment [D]": list(
-                    map(
-                        lambda x: x[0] * 2.541746473,
-                        final_props["Dipole_Moment"]["DIPOLETOTAL"],
-                    )
-                ),
-                "Dipole Magnitude [D]": final_props["Dipole_Moment"]["DIPOLEMAGNITUDE"]
-                * 2.541746473,
-            },
-            "Atomic": {
-                "Mulliken Partial Charges [e]": list(
-                    map(
-                        lambda x: x[0],
-                        final_props["Mulliken_Population_Analysis"]["ATOMICCHARGES"],
-                    )
-                ),
-                "Loewdin Partial Charges [e]": list(
-                    map(
-                        lambda x: x[0],
-                        final_props["Loewdin_Population_Analysis"]["ATOMICCHARGES"],
-                    )
-                ),
-                "Mayer Partial Charges [e]": list(
-                    chain.from_iterable(final_props["Mayer_Population_Analysis"]["QA"])
-                ),
-            },
-            "Bond": {"Mayer Bond Order": bond_list},
-        }
+            final_geom = max(map(lambda x: int(x.split("_")[1]), geometry_keys))
+
+            final_props = properties[f"Geometry_{final_geom}"]
+            mayer_bond_orders = list(
+                map(lambda x: x[0], final_props["Mayer_Population_Analysis"]["BONDORDERS"])
+            )
+            bonds = list(
+                map(
+                    lambda x: [x[0], x[2]],
+                    final_props["Mayer_Population_Analysis"]["COMPONENTS"],
+                )
+            )
+            bond_list = []
+            for mbo, bond in zip(mayer_bond_orders, bonds):
+                bond_list.append({"atom1": bond[0], "atom2": bond[1], "value": mbo})
+            properties = {
+                "Global": {
+                    "Total Energy [eV]": final_props["SCF_Energy"]["SCF_ENERGY"]
+                    * 27.2113834,
+                    "Dipole Moment [D]": list(
+                        map(
+                            lambda x: x[0] * 2.541746473,
+                            final_props["Dipole_Moment"]["DIPOLETOTAL"],
+                        )
+                    ),
+                    "Dipole Magnitude [D]": final_props["Dipole_Moment"]["DIPOLEMAGNITUDE"]
+                    * 2.541746473,
+                },
+                "Atomic": {
+                    "Mulliken Partial Charges [e]": list(
+                        map(
+                            lambda x: x[0],
+                            final_props["Mulliken_Population_Analysis"]["ATOMICCHARGES"],
+                        )
+                    ),
+                    "Loewdin Partial Charges [e]": list(
+                        map(
+                            lambda x: x[0],
+                            final_props["Loewdin_Population_Analysis"]["ATOMICCHARGES"],
+                        )
+                    ),
+                    "Mayer Partial Charges [e]": list(
+                        chain.from_iterable(final_props["Mayer_Population_Analysis"]["QA"])
+                    ),
+                },
+                "Bond": {"Mayer Bond Order": bond_list},
+            }
+        except: 
+            print("property parsing failed. Please file an issue.")
         return properties
 
     def run_orca(self, molecule: rdchem.Mol):

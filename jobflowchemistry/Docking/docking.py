@@ -87,23 +87,26 @@ class AutoDockVina(LigandDocking):
         from meeko import PDBQTWriterLegacy
         from meeko import PDBQTMolecule
         from meeko import RDKitMolCreate
-        from meeko import PDBQTMolecule
-        from meeko import RDKitMolCreate
+        from meeko import Polymer
 
         from vina import vina
 
         # Prep Ligand
         mk_prep = MoleculePreparation()
-        molsetup_list = mk_prep(ligand)
+        molsetup_list = mk_prep(rdchem.Mol(ligand))
         molsetup = molsetup_list[0]
-        ligand_pdbqt_string = PDBQTWriterLegacy.write_string(molsetup)
-
+        ligand_pdbqt_string = PDBQTWriterLegacy.write_string(molsetup)[0]
+        print(ligand_pdbqt_string)
         # Prep Protein
         with open("input.pdb", "w") as f:
             f.write(protein)
-        subprocess.run("mk_prepare_receptor.py -i input.pdb -o prepared -p ")
-        with open("prepared.pdbqrt", "r") as f:
-            protein_pdbqt_string = f.read()
+        # protein = Polymer.from_pdb_string(protein, chem_templates=None, mk_prep=T)
+        # pdbqt_string, _ = PDBQTWriterLegacy.write_string_from_polymer(protein)
+        subprocess.run(
+            "mk_prepare_receptor.py -i input.pdb -o prepared -p ", shell=True
+        )
+        # with open("prepared.pdbqt", "r") as f:
+        #     protein_pdbqt_string = f.read()
 
         # Initialize Docking
         vina = vina.Vina(
@@ -133,16 +136,19 @@ class AutoDockVina(LigandDocking):
         )
         rdmolList = RDKitMolCreate.from_pdbqt_mol(
             pdbqt_molecule,
-            only_cluster_leads=True,
         )[0]
         energies = vina.energies(n_poses=self.n_poses, energy_range=self.energy_range)
         return Structure(rdmolList), energies
+
     def get_properties(self, docked_structures, energies):
-        return {
-            'Global': {
-                f"{self.scoring_function} Docking Scores":energies
-            }
-        }
+        fields = ["Total", "Inter", "Intra", "Torsions", "Intra best pose"]
+        if self.scoring_function == "ad4":
+            fields = ["Total", "Inter", "Intra", "Torsions", "-Intra"]
+        results = []
+        for i, energy in enumerate(energies):
+            results.append({x[0]: x[1] for x in zip(fields, energy)})
+        return {"Global": {f"{self.scoring_function} Docking Scores": results}}
+
     def get_settings(self):
         return {
             "scoring function": self.scoring_function,
@@ -157,5 +163,5 @@ class AutoDockVina(LigandDocking):
             "box_size": self.box_size,
             "space": self.space,
             "energy_range": self.energy_range,
-            "force_even_voxels": self.force_even_voxels
+            "force_even_voxels": self.force_even_voxels,
         }
