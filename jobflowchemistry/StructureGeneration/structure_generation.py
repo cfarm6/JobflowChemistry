@@ -28,6 +28,7 @@ class StructureGeneration(Maker):
 
     @job(files="files", settings="settings", properties="properties")
     def make(self, structure: Structure):
+
         if type(structure) is list:
             jobs = [self.make(s) for s in structure]
             return Response(
@@ -53,7 +54,7 @@ class StructureGeneration(Maker):
                 },
                 detour=jobs,
             )
-
+        
         structure = self.generate_structure(structure)
         # if type(structure) is list: ic(len(structure))
         if structure is None:

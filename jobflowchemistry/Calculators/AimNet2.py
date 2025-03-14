@@ -37,6 +37,7 @@ class AimNet2Calculator(ASECalculator):
 
         if self.charge is None:
             self.charge = rdmolops.GetFormalCharge(molecule)
+        
         atoms = rdkit2ase(molecule)
         atoms.calc = AIMNet2ASE(self.model)
 

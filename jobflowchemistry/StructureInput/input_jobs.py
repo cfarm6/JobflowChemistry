@@ -64,6 +64,7 @@ class SmilesInput(StructureInput):
 
     def get_structure(self, smiles: str):
         molecule = rdmolfiles.MolFromSmiles(smiles)
+        print(len(list(molecule.GetAtoms())))
         properties = {}
         settings = {'Input Method': 'SMILES Input'}
         return molecule, properties, settings

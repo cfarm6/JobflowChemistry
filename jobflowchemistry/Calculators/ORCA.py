@@ -295,7 +295,7 @@ class ORCACalculator:
         )
         bond_list = []
         for mbo, bond in zip(mayer_bond_orders, bonds):
-            bond_list.append({"atom1": bond[0], "atom2": bond[1], "mbo": mbo})
+            bond_list.append({"atom1": bond[0], "atom2": bond[1], "value": mbo})
         properties = {
             "Global": {
                 "Total Energy [eV]": final_props["SCF_Energy"]["SCF_ENERGY"]
@@ -350,6 +350,8 @@ class ORCACalculator:
         if self.parallel is not None:
             keywords.append(self.parallel)
         keywords.append(self.density_functional)
+        if self.basis_set is not None:
+            keywords.append(self.basis_set)
         rdmolfiles.MolToXYZFile(molecule, "input.xyz")
         if self.charge is None:
             self.charge = rdmolops.GetFormalCharge(molecule)

@@ -11,7 +11,7 @@ from .Utilities import *
 from .PropertyWorkflows import *
 from .SpectraCalculator import *
 from .HessianCalculation import *
-
+from .Docking import *
 # from .Biological import *
 from rdkit.Chem import rdchem
 rdchem.SetDefaultPickleProperties(rdchem.PropertyPickleOptions.AllProps)
