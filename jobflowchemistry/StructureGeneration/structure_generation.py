@@ -266,7 +266,7 @@ class RDKitGeneration(StructureGeneration):
     def generate_structure(self, structure: Structure):
         params = getattr(rdDistGeom, self.method)()
         for key, value in vars(self).items():
-            if key == "name" or key == "method" or value is None:
+            if key == "name" or key == "method" or value is None or key not in params.__dict__:
                 continue
             setattr(params, key, value)
         ret = rdDistGeom.EmbedMultipleConfs(structure, 1, params)

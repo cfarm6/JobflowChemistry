@@ -6,7 +6,7 @@ import subprocess
 from rdkit.Chem import rdchem
 from rdkit.Chem import rdmolfiles
 from typing import Union, Literal, List
-
+from io import StringIO
 # - - - - - - - -
 from ..Structure import Structure
 from ..outputs import Settings, Properties
@@ -54,10 +54,18 @@ class LigandDocking(Maker):
         structures, energies = self.dock(structure, protein)
         settings = self.get_settings()
         properties = self.get_properties(structures, energies)
+        
+        sio = StringIO()
+        writer = rdmolfiles.SDWriter(sio)
+        cids = list(map(lambda x: x.GetId(), structure.GetConformers()))
+        for cid in cids:
+            writer.write(structures, confId=cid)
+        writer.flush()
+        struct_file = sio.getvalue()
         return Response(
             output={
                 "structure": Structure(structure),
-                "files": rdmolfiles.MolToV3KMolBlock(structure),
+                "files": struct_file,
                 "settings": Settings(settings),
                 "properties": Properties(properties),
             },

@@ -2,6 +2,7 @@ from rdkit.Chem.rdchem import Mol
 import pickle
 
 class Structure(Mol):
+    periodic: bool = False
     def as_dict(self):
         d = {
             "@module": self.__class__.__module__,

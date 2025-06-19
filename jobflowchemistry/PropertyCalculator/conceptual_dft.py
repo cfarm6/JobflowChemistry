@@ -7,6 +7,7 @@ from jobflow import Response, job, Flow, Maker
 from rdkit.Chem import rdmolfiles, rdmolops
 import subprocess
 import re
+import json
 
 
 @dataclass
@@ -114,7 +115,7 @@ class xTBVerticalElectronAffinityAndIonizationPotential(ConceptualDFTProperties)
         softness = 1 / hardness
         elctrophilicity_index = chemical_potential**2 / 2 / hardness
 
-        return structure, {
+        properties = {
             "Global": {
                 "Vertical Ionization Potential [eV]": vertical_ionization_potential,
                 "Vertical Electron Affinity [eV]": vertical_eletron_affinity,
@@ -123,8 +124,10 @@ class xTBVerticalElectronAffinityAndIonizationPotential(ConceptualDFTProperties)
                 "Hardness [eV]": hardness,
                 "Softness [1/eV]": softness,
                 "Electrophilicity Index [eV]": elctrophilicity_index,
-            }
+            },
         }
+
+        return structure, properties
 
 
 @dataclass

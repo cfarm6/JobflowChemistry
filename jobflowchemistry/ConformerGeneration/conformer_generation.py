@@ -124,23 +124,6 @@ class rdKitConformers(ConformerGeneration):
     def properties(self, structure: Structure):
         return {}
 
-
-@dataclass
-class StudioFilter(ConformerGeneration):
-    name: str = "Studio Filter"
-
-    def generate_conformers(self, structure: Structure):
-        return structure
-
-    def settings(self):
-        return {}
-
-    def properties(self, structure):
-        return {}
-
-    pass
-
-
 @dataclass
 class Auto3DConformers(ConformerGeneration):
     name: str = "Auto 3D Conformer Generation"

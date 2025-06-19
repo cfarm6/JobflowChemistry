@@ -67,9 +67,11 @@ class PropertyCalculator(Maker):
                 for i, atom in enumerate(structure.GetAtoms()):
                     atom.SetDoubleProp(k, float(v[i]))
         if "Bond" in properties:
-            for k,v in properties["Bond"].items():
-                bond = structure.GetBondBetweenAtoms(v[0], v[1])
-                bond.SetDoubleProp(k, float(v[2]))
+            for k,vs in properties["Bond"].items():
+                for v in vs:
+                    bond = structure.GetBondBetweenAtoms(v["atom1"], v["atom2"])
+                    if bond is None: continue
+                    bond.SetDoubleProp(k, float(v["value"]))
 
         settings = self.get_settings()
         return Response(
