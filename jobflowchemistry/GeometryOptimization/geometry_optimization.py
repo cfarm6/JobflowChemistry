@@ -44,6 +44,7 @@ class GeometryOptimization(Maker):
             return Response(
                 output={
                     "structure": [x.output["structure"] for x in jobs],
+                    "files": [x.output["files"] for x in jobs],
                     "settings": Settings({}),
                     "properties": [x.output["properties"] for x in jobs],
                 },
