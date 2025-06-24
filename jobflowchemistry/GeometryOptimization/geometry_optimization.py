@@ -54,16 +54,21 @@ class GeometryOptimization(Maker):
         if "Global" in properties:
             for k,v in properties["Global"].items():
                 if type(v) is list: continue
+                if type(v) is dict: continue
                 structure.SetDoubleProp(k, float(v), computed=True)
         if "Atomic" in properties:
             for k,v in properties["Atomic"].items():
                 for i, atom in enumerate(structure.GetAtoms()):
+                    if type(v[i]) is dict:
+                        continue
                     atom.SetDoubleProp(k, float(v[i]))
         if "Bond" in properties:
             for k,v in properties["Bond"].items():
                 for i in v:
                     bond = structure.GetBondBetweenAtoms(i['atom1'], i['atom2'])
                     if bond is None: continue
+                    if type(i['value']) is dict:
+                        continue
                     bond.SetDoubleProp(k, float(i['value']))
 
         return Response(
