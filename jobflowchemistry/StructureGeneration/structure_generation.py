@@ -78,12 +78,14 @@ class StructureGeneration(Maker):
                 stored_data={},
             )
         else:
+            with rdmolfiles.SDWriter("structures.sdf") as f:
+                for s in structure:
+                    f.write(s)
+            filelines = open("structures.sdf").readlines()
             resp = Response(
                 output={
                     "structure": list(map(lambda x: Structure(x), structure)),
-                    "files": list(
-                        map(lambda x: rdmolfiles.MolToV3KMolBlock(x), structure)
-                    ),
+                    "files": filelines,
                     "settings": Settings(settings),
                     "properties": Properties(properties),
                 },
