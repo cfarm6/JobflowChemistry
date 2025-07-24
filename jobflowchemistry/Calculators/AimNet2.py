@@ -23,7 +23,7 @@ class AimNet2Calculator(ASECalculator):
         return settings
 
     def get_properties(self, atoms: Atoms):
-        energy = atoms.get_total_energy()[0]
+        energy = atoms.get_total_energy()
         charge = atoms.get_charges()
         properties = {
             "Global": {"Total Energy [eV]": energy},
