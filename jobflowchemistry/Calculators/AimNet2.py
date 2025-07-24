@@ -33,7 +33,7 @@ class AimNet2Calculator(ASECalculator):
         return properties
 
     def set_calculator(self, molecule: rdchem.Mol):
-        from aimnet2calc import AIMNet2ASE
+        from aimnet.calculators import AIMNet2ASE
 
         if self.charge is None:
             self.charge = rdmolops.GetFormalCharge(molecule)
