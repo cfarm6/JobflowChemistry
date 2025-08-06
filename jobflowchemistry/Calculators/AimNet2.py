@@ -23,7 +23,7 @@ class AimNet2Calculator(ASECalculator):
         return settings
 
     def get_properties(self, atoms: Atoms):
-        energy = atoms.get_total_energy()[0]
+        energy = atoms.get_total_energy()
         charge = atoms.get_charges()
         properties = {
             "Global": {"Total Energy [eV]": energy},
@@ -33,7 +33,7 @@ class AimNet2Calculator(ASECalculator):
         return properties
 
     def set_calculator(self, molecule: rdchem.Mol):
-        from aimnet2calc import AIMNet2ASE
+        from aimnet.calculators import AIMNet2ASE
 
         if self.charge is None:
             self.charge = rdmolops.GetFormalCharge(molecule)
