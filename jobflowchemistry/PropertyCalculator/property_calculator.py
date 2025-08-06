@@ -229,7 +229,10 @@ class MassCCS(CollisionCrossSectionCalculator):
             lines = f.readlines()
             for i, line in enumerate(lines):
                 if i < 2: continue
-                line.append(" " + str(charges[i-2]))
+                blocks = line.split()
+                blocks.append(str(charges[i-2]))
+                line = " ".join(blocks) + "\n"
+                lines[i] = line
             with open("mol.xyz", "w") as f:
                 f.writelines(lines)
         settings = {
