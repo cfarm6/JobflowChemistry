@@ -203,6 +203,7 @@ class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
 class MassCCS(CollisionCrossSectionCalculator):
     name: str = "Mass CCS Calculation"
     executable: str = "massccs"
+    charge_type: str = None
     number_probes: int = 1000
     ccs_integrals: int = 10
     nthreads: int = 1
@@ -222,7 +223,15 @@ class MassCCS(CollisionCrossSectionCalculator):
     def get_properties(self, structure: Structure):
         import json
         properties = {}
+        charges = [atom.GetProp(self.charge_type) for atom in structure.GetAtoms()]
         rdmolfiles.MolToXYZFile(structure, "mol.xyz")
+        with open("mol.xyz", "r") as f:
+            lines = f.readlines()
+            for i, line in enumerate(lines):
+                if i < 2: continue
+                line.append(" " + str(charges[i-2]))
+            with open("mol.xyz", "w") as f:
+                f.writelines(lines)
         settings = {
             "targetFileName": "mol.xyz",
             "numberProbe": self.number_probes,
