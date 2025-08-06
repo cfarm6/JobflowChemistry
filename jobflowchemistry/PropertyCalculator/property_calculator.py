@@ -218,6 +218,7 @@ class MassCCS(CollisionCrossSectionCalculator):
     long_range_cutoff: bool = True
     coulomb_cutoff: float = 25.0
     polarizability: bool = False
+    force_field: str = None
     def get_settings(self):
         return {k:v for k,v in vars(self).items() if k != "name"}
     def get_properties(self, structure: Structure):
@@ -252,6 +253,8 @@ class MassCCS(CollisionCrossSectionCalculator):
             "Coul-cutoff": self.coulomb_cutoff,
             "polarizabilty": "yes" if self.polarizability else "no",
         }
+        if self.force_field is not None:
+            settings["ForceField"] = self.force_field
         with open("input.json", "w") as f:
             json.dump(settings, f)
         subprocess.call(f"{self.executable} input.json > log.out", shell=True, )
