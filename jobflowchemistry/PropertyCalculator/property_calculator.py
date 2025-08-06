@@ -19,6 +19,18 @@ from ..outputs import Properties, Settings
 
 @dataclass
 class PropertyCalculator(Maker):
+    """
+    Base class for property calculation jobs in workflows.
+
+    Provides an interface for property calculations on molecular structures.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    get_properties(structure)
+        Abstract method for computing properties of a structure.
+    """
     name: str = "Property Calculation"
 
     def get_settings(self):
@@ -87,6 +99,16 @@ class PropertyCalculator(Maker):
 
 @dataclass
 class CollisionCrossSectionCalculator(PropertyCalculator):
+    """
+    Calculator for collision cross section (CCS) calculations.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    get_properties(structure)
+        Compute the collision cross section for a structure.
+    """
     name: str = "Collision Cross Section Calculation"
     pass
 
@@ -177,7 +199,62 @@ class MobcalCollisionCrossSection(CollisionCrossSectionCalculator):
         }
         return structure, properties
 
-
+@dataclass
+class MassCCS(CollisionCrossSectionCalculator):
+    name: str = "Mass CCS Calculation"
+    executable: str = "massccs"
+    number_probes: int = 1000
+    ccs_integrals: int = 10
+    nthreads: int = 1
+    temperature: float = 298.0
+    dt: float = 10
+    skin: float = 0.01
+    buffer_gas: Literal["He", "N2", "CO2"] = "N2"
+    equipotential: bool = False
+    short_range_cutoff: bool = True
+    lj_cutoff: float = 12.0
+    long_range_forces: bool = False
+    long_range_cutoff: bool = True
+    coulomb_cutoff: float = 25.0
+    polarizability: bool = False
+    def get_settings(self):
+        return {k:v for k,v in vars(self).items() if k != "name"}
+    def get_properties(self, structure: Structure):
+        import json
+        properties = {}
+        rdmolfiles.MolToXYZFile(structure, "mol.xyz")
+        settings = {
+            "targetFileName": "mol.xyz",
+            "numberProbe": self.number_probes,
+            "nIter": self.ccs_integrals,
+            "nthreads": self.nthreads,
+            "Temp": self.temperature,
+            "dt": self.dt,
+            "skin": self.skin,
+            "GasBuffer": self.buffer_gas,
+            "Equipotential": "yes" if self.equipotential else "no",
+            "Short-range cutoff": "yes" if self.short_range_cutoff else "no",
+            "LJ-cutoff": self.lj_cutoff,
+            "Long-range forces": "yes" if self.long_range_forces else "no",
+            "Long-range cutoff": "yes" if self.long_range_cutoff else "no",
+            "Coul-cutoff": self.coulomb_cutoff,
+            "polarizabilty": "yes" if self.polarizability else "no",
+        }
+        with open("input.json", "w") as f:
+            json.dump(settings, f)
+        subprocess.call(f"{self.executable} input.json > log.out", shell=True, )
+        with open("log.out", "r") as f:
+            # Read the last four lines of the log file
+            lines = f.readlines()[-4:]
+            CCS = lines[0].split()[-2]
+            standard_deviation = lines[1].split()[-2]
+            properties = {
+                "Global": {
+                    "CCS [A^2]": CCS,
+                    "CCS Standard Deviation [A^2]": standard_deviation,
+                }
+            }
+        return structure, properties
 @dataclass
 class QupKakePrediction(PropertyCalculator):
     name: str = "QupKake pKa Prediction"

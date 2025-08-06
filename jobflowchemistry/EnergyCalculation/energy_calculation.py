@@ -18,6 +18,18 @@ from ..outputs import Settings, Properties
 
 @dataclass
 class EnergyCalculation(Maker):
+    """
+    Base class for single-point energy calculation jobs in workflows.
+
+    Provides an interface for energy calculations on molecular structures.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    calculate_energy(molecule)
+        Abstract method for computing the energy of a molecule.
+    """
     name: str = "Single Point Calculation"
 
     def get_settings(self):
@@ -84,6 +96,16 @@ class EnergyCalculation(Maker):
 
 @dataclass
 class ASEEnergyCalculator(ASECalculator, EnergyCalculation):
+    """
+    Energy calculation using ASE calculators.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    calculate_energy(structure)
+        Compute the energy of a structure using ASE.
+    """
     name: str = "ASE Energy Calculator"
 
     def get_settings(self):
@@ -102,6 +124,9 @@ class TBLiteEnergyCalculation(TBLiteCalculator, ASEEnergyCalculator):
 
 @dataclass
 class AimNet2EnergyCalculation(AimNet2Calculator, ASEEnergyCalculator):
+    """
+    Energy calculation using AimNet2 and ASE calculators.
+    """
     name: str = "AimNet2 Energy Calculation"
 
 
@@ -136,6 +161,9 @@ class xTBEnergyCalculation(xTBCalculator, EnergyCalculation):
 
 @dataclass
 class PTBCalculation(PTBCalculator, EnergyCalculation):
+    """
+    Energy calculation using PTB (xtb) calculator.
+    """
     name: str = "PTB Energy Calculation"
     raman = False
     def calculate_energy(self, structure: Structure):

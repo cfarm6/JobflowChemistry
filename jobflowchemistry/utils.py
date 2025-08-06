@@ -5,13 +5,41 @@ import json
 
 
 def rdkit2ase(molecule: rdchem.Mol) -> Atoms:
+    """
+    Convert an RDKit molecule to an ASE Atoms object.
+
+    Parameters
+    ----------
+    molecule : rdkit.Chem.Mol
+        The RDKit molecule to convert.
+
+    Returns
+    -------
+    Atoms
+        ASE Atoms object with atomic numbers and positions from the molecule.
+    """
     atomic_numbers = [atom.GetAtomicNum() for atom in molecule.GetAtoms()]
     print("CONFS", molecule.GetNumConformers())
     positions = molecule.GetConformer().GetPositions()
     return Atoms(numbers=atomic_numbers, positions=positions)
 
 
-def ase2rdkit(atoms: Atoms, mol: rdchem.Mol = None):
+def ase2rdkit(atoms: Atoms, mol: rdchem.Mol = None) -> rdchem.Mol:
+    """
+    Convert an ASE Atoms object to an RDKit molecule.
+
+    Parameters
+    ----------
+    atoms : ase.Atoms
+        The ASE Atoms object to convert.
+    mol : rdkit.Chem.Mol, optional
+        Existing RDKit molecule to update. If None, a new molecule is created.
+
+    Returns
+    -------
+    rdkit.Chem.Mol
+        RDKit molecule with atom positions set from the ASE Atoms object.
+    """
     if mol is None:
         atomic_numbers = atoms.get_atomic_numbers()
         rw_mol = rdchem.RWMol()
@@ -27,6 +55,20 @@ def ase2rdkit(atoms: Atoms, mol: rdchem.Mol = None):
 
 
 def parse_gaussian_output(file_path):
+    """
+    Parse a Gaussian output file for vibrational analysis data.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to the Gaussian output file.
+
+    Returns
+    -------
+    tuple
+        Tuple containing frequencies, reduced masses, force constants, IR intensities,
+        Raman activity, depolarization, and displacement vectors.
+    """
     # Initialize data structures
     frequencies = []
     reduced_masses = []
@@ -154,6 +196,16 @@ def parse_gaussian_output(file_path):
 
 
 def fix_json_file(input_file, output_file):
+    """
+    Fix and clean a malformed JSON file, writing the result to a new file.
+
+    Parameters
+    ----------
+    input_file : str
+        Path to the input JSON file.
+    output_file : str
+        Path to write the cleaned JSON file.
+    """
     try:
         with open(input_file, "r") as file:
             json_data = file.read()

@@ -1,23 +1,22 @@
-"""Provide the primary functions."""
+"""
+Primary functions for the JobFlowChemistry package.
+"""
 
 
 def canvas(with_attribution=True):
     """
-    Placeholder function to show example docstring (NumPy format).
-
-    Replace this function and doc string for your own project.
+    Return a motivational quote about code as a placeholder example.
 
     Parameters
     ----------
-    with_attribution : bool, Optional, default: True
-        Set whether or not to display who the quote is from.
+    with_attribution : bool, optional
+        Whether to include the attribution (default is True).
 
     Returns
     -------
-    quote : str
-        Compiled string including quote and optional attribution.
+    str
+        The quote, optionally with attribution.
     """
-
     quote = "The code is but a canvas to our imagination."
     if with_attribution:
         quote += "\n\t- Adapted from Henry David Thoreau"

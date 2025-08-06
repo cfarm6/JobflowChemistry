@@ -18,7 +18,15 @@ class Structure(Mol):
             return pickle.loads(d["data"])
 
 class ThreeDimensionalStructure(Structure):
+    """
+    Represents a three-dimensional molecular structure.
+    Inherits from Structure.
+    """
     None
 
 class TwoDimensionalStructure(Structure):
+    """
+    Represents a two-dimensional molecular structure.
+    Inherits from Structure.
+    """
     None

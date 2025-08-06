@@ -1,0 +1,5 @@
+/* Force wrapping for long class/function signatures in Sphinx autodoc */
+.sig, .sig-object, .sig-name, .sig-param, .sig-paren, .sig-return {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+} 

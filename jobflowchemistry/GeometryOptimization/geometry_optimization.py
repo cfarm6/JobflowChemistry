@@ -19,6 +19,23 @@ from ..outputs import Settings, Properties
 
 @dataclass
 class GeometryOptimization(Maker):
+    """
+    Base class for geometry optimization jobs in workflows.
+
+    Provides an interface for optimizing molecular structures.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+
+    Methods
+    -------
+    optimize_structure(structure)
+        Abstract method for optimizing a structure.
+    make(structure)
+        Job for executing the optimization and returning results as a Response.
+    """
     name: str = "Geometry Optimization"
 
     def optimize_structure(self, structure: Structure):
@@ -84,6 +101,25 @@ class GeometryOptimization(Maker):
 
 @dataclass
 class ASEOptimization(GeometryOptimization, ASECalculator):
+    """
+    Geometry optimization using ASE calculators.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    optimizer : Literal
+        Optimizer algorithm to use (e.g., 'LBFGS', 'BFGS', etc.).
+    fmax : float
+        Maximum force for convergence.
+    steps : int
+        Maximum number of optimization steps.
+
+    Methods
+    -------
+    optimize_structure(structure)
+        Optimize the structure using the specified ASE optimizer.
+    """
     name: str = "ASE Optimization"
     optimizer: Literal["LBFGS", "BFGS", "FIRE", "FIRE2"] = field(default="LBFGS")
     fmax: float = 0.05
@@ -103,15 +139,50 @@ class ASEOptimization(GeometryOptimization, ASECalculator):
 
 @dataclass
 class TBLiteOptimization(ASEOptimization, TBLiteCalculator):
+    """
+    Geometry optimization using TBLite and ASE calculators.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    """
     name: str = "TBLite Optimization"
 
 
 @dataclass
 class AimNet2Optimization(ASEOptimization, AimNet2Calculator):
+    """
+    Job for geometry optimization using AimNet2 and ASE calculators.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+
+    Methods
+    -------
+    (Inherits methods for geometry optimization from ASEOptimization and AimNet2Calculator.)
+    """
     name: str = "AimNet2 Optimization"
 
 @dataclass
 class ORCAOptimization(GeometryOptimization, ORCACalculator):
+    """
+    Geometry optimization using the ORCA quantum chemistry package.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    runtype : Literal
+        Type of ORCA run (default: 'OPT').
+
+    Methods
+    -------
+    optimize_structure(molecule)
+        Optimize the structure using ORCA and return the optimized molecule, properties, and settings.
+    """
     name: str = "ORCA Optimization"
     runtype: Literal["OPT"] = "OPT"
 
@@ -127,6 +198,19 @@ class ORCAOptimization(GeometryOptimization, ORCACalculator):
 
 @dataclass
 class xTBOptimization(xTBCalculator, GeometryOptimization):
+    """
+    Geometry optimization using the xTB semiempirical quantum chemistry package.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+
+    Methods
+    -------
+    optimize_structure(structure)
+        Optimize the structure using xTB and return the optimized molecule, properties, and settings.
+    """
     name: str = "xTB Optimizer"
     def __post_init__(self):
         # List of prefixes to delete

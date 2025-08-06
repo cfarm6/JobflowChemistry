@@ -73,6 +73,29 @@ class CRESTCalculationBlock():
 
 @dataclass
 class CRESTCalculator():
+    """
+    Calculator interface for running CREST conformer sampling and ensemble calculations.
+
+    This class provides methods to configure, run, and parse results from CREST.
+
+    Attributes
+    ----------
+    name : str
+        Name of the calculator.
+    threads : int
+        Number of threads to use.
+    runtype : Literal
+        Type of CREST calculation to perform.
+    blocks : List[Dict]
+        Calculation blocks for CREST input.
+    inputfile : str
+        Path to the CREST input file.
+
+    Methods
+    -------
+    make_dict()
+        Return a dictionary representation of the CREST calculation setup.
+    """
     name: str = "CREST Calculator"
     threads: int = 1
     runtype: Literal[

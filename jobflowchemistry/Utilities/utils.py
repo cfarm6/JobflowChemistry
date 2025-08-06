@@ -8,6 +8,16 @@ from typing import Literal
 
 @dataclass
 class Utilities(Maker):
+    """
+    Base class for utility jobs in workflows.
+
+    Provides a template for utility operations as jobs.
+
+    Methods
+    -------
+    make()
+        Abstract job method to be implemented by subclasses.
+    """
     name: str = "Utilities"
     @job 
     def make(self):
@@ -16,6 +26,29 @@ class Utilities(Maker):
 
 @dataclass
 class BoltzmannWeighting(Utilities):
+    """
+    Job for Boltzmann-weighted averaging of molecular properties.
+
+    Attributes
+    ----------
+    temperature : float
+        Temperature in Kelvin for Boltzmann weighting.
+    property_type : Literal["global"]
+        Type of property to weight.
+    property : str
+        Name of the property to weight.
+    energy_name : str
+        Name of the energy property.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current settings.
+    flatten_array(arr)
+        Flatten a nested list of arrays.
+    make(structure)
+        Job for computing Boltzmann-weighted property averages.
+    """
     name: str = "Boltzmann Weighting"
     temperature: float = 300.0
     property_type: Literal["global"] = "global"

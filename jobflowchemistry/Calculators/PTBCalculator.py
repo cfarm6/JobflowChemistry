@@ -8,6 +8,37 @@ import os
 from ..utils import fix_json_file
 @dataclass
 class PTBCalculator():
+    """
+    Calculator interface for running PTB (xtb) property calculations.
+
+    This class provides methods to configure, run, and parse results from PTB/xtb.
+
+    Attributes
+    ----------
+    name : str
+        Name of the calculator.
+    executable : str
+        Path or command for the xtb executable.
+    chrg : int
+        Molecular charge.
+    spin : int
+        Spin multiplicity.
+    cma : bool
+        Use constrained molecular alignment.
+    ceh : bool
+        Use charge extended Huckel.
+    raman : bool
+        Whether to compute Raman spectra.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    get_properties(molecule)
+        Parse and return computed properties from PTB output.
+    _run_ptb(molecule)
+        Run a PTB calculation for the given molecule.
+    """
     name: str = "PTB Calculator"
     executable: str = "xtb"
     chrg: int = 0

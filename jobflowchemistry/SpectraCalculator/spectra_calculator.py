@@ -19,6 +19,25 @@ from ..outputs import Properties, Settings
 
 @dataclass
 class SpectraCalculator(Maker):
+    """
+    Base class for spectra calculation jobs in workflows.
+
+    Provides an interface for calculating molecular spectra (e.g., IR, Raman).
+
+    Attributes
+    ----------
+    name : str
+        Name of the calculator.
+
+    Methods
+    -------
+    get_settings()
+        Abstract method to return calculator settings.
+    get_properties(molecule)
+        Abstract method to compute spectra properties for a molecule.
+    make(structure)
+        Job for executing the spectra calculation and returning results as a Response.
+    """
     name: str = "Spectra Calculation"
 
     def get_settings(self):
@@ -88,6 +107,16 @@ class SpectraCalculator(Maker):
 
 @dataclass
 class PTBRamanSpectra(PTBCalculator, SpectraCalculator):
+    """
+    Job for calculating Raman spectra using the PTB (xtb) calculator.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    raman : bool
+        Whether to compute Raman spectra (always True for this class).
+    """
     name: str = "PTB Raman Spectra"
-    raman:bool = True
+    raman: bool = True
     pass

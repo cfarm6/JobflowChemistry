@@ -8,6 +8,190 @@ import re
 
 @dataclass
 class xTBCalculator:
+    """
+    Calculator interface for running xTB semiempirical quantum chemistry calculations.
+
+    This class provides methods to configure, run, and parse results from xTB.
+
+    Attributes
+    ----------
+    name : str
+        Name of the calculator.
+    executable : str
+        Path or command for the xTB executable.
+    chrg : int
+        Molecular charge.
+    spin : int
+        Spin multiplicity.
+    cma : bool
+        Use constrained molecular alignment.
+    keyword_ceh : bool
+        Use charge extended Huckel.
+    gfn_method : Literal[1, 2]
+        GFN method version.
+    gfn_scc : bool
+        Use self-consistent charge.
+    gfn_periodic : bool
+        Use periodic boundary conditions.
+    gfn_dispscale : float
+        Dispersion scaling factor.
+    scc_maxiterations : int
+        Maximum SCC iterations.
+    scc_temp : float
+        SCC temperature.
+    scc_broydamp : float
+        SCC Broyden damping.
+    opt_optlevel : Literal
+        Optimization level.
+    opt_engine : Literal
+        Optimization engine.
+    opt_microcycle : int
+        Optimization microcycle.
+    opt_maxcycle : int
+        Optimization maxcycle.
+    opt_hlow : float
+        Optimization hlow.
+    opt_s6 : float
+        Optimization s6.
+    opt_kstretch : float
+        Optimization kstretch.
+    opt_kbend : float
+        Optimization kbend.
+    opt_koutofp : float
+        Optimization koutofp.
+    opt_kvdw : float
+        Optimization kvdw.
+    opt_kes : float
+        Optimization kes.
+    opt_rcut : float
+        Optimization rcut.
+    opt_exact_rf : bool
+        Optimization exact_rf.
+    opt_average_conv : bool
+        Optimization average_conv.
+    thermo_temp : float
+        Thermodynamic temperature.
+    thermo_sthr : float
+        Thermodynamic sthr.
+    thermo_imagthr : float
+        Thermodynamic imagthr.
+    thermo_scale : float
+        Thermodynamic scale.
+    md_temp : float
+        Molecular dynamics temperature.
+    md_time : float
+        Molecular dynamics time.
+    md_dump : float
+        Molecular dynamics dump.
+    md_velo : int
+        Molecular dynamics velo.
+    md_nvt : Literal[1, 0]
+        Molecular dynamics nvt.
+    md_skip : int
+        Molecular dynamics skip.
+    md_step : float
+        Molecular dynamics step.
+    md_hmass : int
+        Molecular dynamics hmass.
+    md_shake : int
+        Molecular dynamics shake.
+    md_sccacc : float
+        Molecular dynamics sccacc.
+    md_forcewrrestart : bool
+        Molecular dynamics forcewrrestart.
+    hess_sccacc : float
+        Hessian sccacc.
+    hess_step : float
+        Hessian step.
+    hess_scale : float
+        Hessian scale.
+    modef_n : int
+        Modef n.
+    modef_step : float
+        Modef step.
+    modef_updat : float
+        Modef updat.
+    modef_local : Literal[0, 1]
+        Modef local.
+    modef_vthr : float
+        Modef vthr.
+    modef_prj : int
+        Modef prj.
+    modef_mode : int
+        Modef mode.
+    cube_step : float
+        Cube step.
+    cube_pthr : float
+        Cube pthr.
+    cube_boff : float
+        Cube boff.
+    solvent : Literal
+        Solvent.
+    alpb : bool
+        Alpb.
+    cosmo : bool
+        Cosmo.
+    cpcmx : Literal
+        Cpcmx.
+    write_esp : bool
+        Write esp.
+    write_mos : bool
+        Write mos.
+    write_gbw : bool
+        Write gbw.
+    write_tm_mos : bool
+        Write tm_mos.
+    write_tm_basis : bool
+        Write tm_basis.
+    write_lmo : bool
+        Write lmo.
+    write_density : bool
+        Write density.
+    write_spin_population : bool
+        Write spin_population.
+    write_spin_density : bool
+        Write spin_density.
+    write_fod : bool
+        Write fod.
+    write_fod_population : bool
+        Write fod_population.
+    write_wiberg : bool
+        Write wiberg.
+    write_wbo_fragments : bool
+        Write wbo_fragments.
+    write_dipole : bool
+        Write dipole.
+    write_charges : bool
+        Write charges.
+    write_mulliken : bool
+        Write mulliken.
+    write_orbital_energies : bool
+        Write orbital_energies.
+    write_inertia : bool
+        Write inertia.
+    write_distances : bool
+        Write distances.
+    write_angles : bool
+        Write angles.
+    write_torsions : bool
+        Write torsions.
+    write_final_struct : bool
+        Write final_struct.
+    write_geosum : bool
+        Write geosum.
+    write_stm : bool
+        Write stm.
+    write_modef : bool
+        Write modef.
+    write_gbsa : bool
+        Write gbsa.
+    write_json : bool
+        Write json.
+
+    Methods
+    -------
+    (Implement methods for running xTB and parsing results.)
+    """
     name: str = "xTB Calculator"
     executable: str = "xtb"
     chrg: int = 0

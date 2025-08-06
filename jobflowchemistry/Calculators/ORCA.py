@@ -9,6 +9,61 @@ from ase import io
 
 @dataclass
 class ORCACalculator:
+    """
+    Calculator interface for running ORCA quantum chemistry calculations.
+
+    This class provides methods to configure, run, and parse results from ORCA.
+
+    Attributes
+    ----------
+    name : str
+        Name of the calculator.
+    base_name : str
+        Base name for ORCA input/output files.
+    executable : str
+        Path or command for the ORCA executable.
+    theory : str
+        Level of theory (e.g., 'DFT').
+    symmetry : bool
+        Whether to use symmetry in calculations.
+    initial_guess : Literal
+        Initial guess method for SCF.
+    grid : Literal
+        Grid level for DFT integration.
+    scf_conv : Literal
+        SCF convergence criteria.
+    geom_conv : Literal
+        Geometry optimization convergence criteria.
+    geom_maxiter : int
+        Maximum number of geometry optimization iterations.
+    conv_acc : Literal
+        Convergence acceleration method.
+    keepdens : bool
+        Whether to keep density files.
+    keepints : bool
+        Whether to keep integral files.
+    density_functional : str
+        Density functional to use.
+    basis_set : str
+        Basis set to use.
+    multiplicity : int
+        Spin multiplicity.
+    charge : int
+        Molecular charge.
+    parallel : Literal
+        Parallelization keyword.
+    aim : bool
+        Whether to run AIM analysis.
+
+    Methods
+    -------
+    get_settings()
+        Return a dictionary of current calculator settings.
+    get_properties(molecule)
+        Parse and return computed properties from ORCA output.
+    run_orca(molecule)
+        Run an ORCA calculation for the given molecule.
+    """
     name: str = "ORCA Calculator"
     base_name: str = "ORCA"
     executable: str = "orca"

@@ -6,6 +6,16 @@ from monty.json import MontyDecoder, MontyEncoder
 import json
 
 class TaskNode():
+    """
+    Base class for representing a task node in a workflow.
+
+    Provides serialization to a JSON-serializable dictionary and handles versioning.
+
+    Methods
+    -------
+    as_dict()
+        Return a JSON-serializable dictionary representation of the object.
+    """
 
     def as_dict(self) -> dict:
         """

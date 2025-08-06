@@ -20,6 +20,25 @@ from ..ConformerGeneration import rdKitConformers
 
 @dataclass
 class StructureGeneration(Maker):
+    """
+    Base class for structure generation jobs in workflows.
+
+    Provides an interface for generating molecular structures, including job execution and conformer handling.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    check_structure : bool
+        Whether to check the generated structure with PoseBusters.
+
+    Methods
+    -------
+    generate_structure(structure)
+        Abstract method for generating a structure.
+    make(structure)
+        Job for generating structures and returning results as a Response.
+    """
     name: str = field(default="Structure Generation")
     check_structure: bool = False
 
@@ -96,6 +115,41 @@ class StructureGeneration(Maker):
 
 @dataclass
 class CRESTProtonation(StructureGeneration):
+    """
+    Job for generating protonated structures using CREST.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    runtype : Literal
+        Type of CREST calculation (default: 'protonate').
+    ion : str
+        Ion to use for protonation.
+    ion_charge : int
+        Charge of the ion.
+    ewin : float
+        Energy window for protonation.
+    ffopt : bool
+        Whether to use force field optimization.
+    freezeopt : any
+        Freeze optimization parameter.
+    finalopt : bool
+        Whether to perform final optimization.
+    threads : int
+        Number of threads to use.
+
+    Methods
+    -------
+    make_dict()
+        Return a dictionary of relevant settings for CREST input.
+    settings()
+        Return the settings for the job.
+    properties(structure)
+        Return properties for the structure (empty by default).
+    generate_structure(structure)
+        Generate protonated structures from the input structure.
+    """
     name: str = "CREST Protonation"
     runtype: Literal["protonate"] = "protonate"
     ion: str = None
@@ -160,6 +214,25 @@ class CRESTProtonation(StructureGeneration):
 class CRESTDeprotonation(
     StructureGeneration,
 ):
+    """
+    Job for generating deprotonated structures using CREST.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    ewin : float
+        Energy window for deprotonation.
+
+    Methods
+    -------
+    generate_structure(structure)
+        Generate deprotonated structures from the input structure.
+    settings()
+        Return the settings for the job.
+    properties(structure)
+        Return properties for the structure (empty by default).
+    """
     name: str = "CREST Deprotonation"
     ewin: float = None
 
@@ -235,6 +308,75 @@ class CRESTDeprotonation(
 
 @dataclass
 class RDKitGeneration(StructureGeneration):
+    """
+    Job for generating structures using RDKit distance geometry methods.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    method : Literal
+        Embedding method to use.
+    boundsMatForceScaling: float
+        Scaling factor for bounds matrix force.
+    boxSizeMult: float
+        Multiplier for box size.
+    clearConfs: bool
+        Whether to clear conformers.
+    embedFragmentsSeparately: bool
+        Whether to embed fragments separately.
+    enableSequentialRandomSeeds: bool
+        Whether to enable sequential random seeds.
+    enforceChirality: bool
+        Whether to enforce chirality.
+    forceTransAmides: bool
+        Whether to force trans amides.
+    ignoreSmoothingFailures: bool
+        Whether to ignore smoothing failures.
+    maxIterations: int
+        Maximum number of iterations.
+    numThreads: int
+        Number of threads to use.
+    numZeroFail: int
+        Number of zero failures.
+    onlyHeavyAtomsForRMS: bool
+        Whether to use only heavy atoms for RMS.
+    optimizerForceTol: float
+        Optimizer force tolerance.
+    pruneRmsThresh: float
+        Prune RMS threshold.
+    randNegEig: bool
+        Whether to use random negative eigenvalue.
+    randomSeed: int
+        Random seed.
+    symmetrizeConjugatedTerminalGroupsForPruning: bool
+        Whether to symmetrize conjugated terminal groups for pruning.
+    trackFailures: bool
+        Whether to track failures.
+    useBasicKnowledge: bool
+        Whether to use basic knowledge.
+    useExpTorsionAnglePrefs: bool
+        Whether to use experimental torsion angle preferences.
+    useMacrocycle14config: bool
+        Whether to use macrocycle 14 configuration.
+    useMacrocycleTorsions: bool
+        Whether to use macrocycle torsions.
+    useRandomCoords: bool
+        Whether to use random coordinates.
+    useSmallRingTorsions: bool
+        Whether to use small ring torsions.
+    useSymmetryForPruning: bool
+        Whether to use symmetry for pruning.
+
+    Methods
+    -------
+    generate_structure(structure)
+        Generate structures using RDKit distance geometry.
+    settings()
+        Return the settings for the job.
+    properties(structure)
+        Return properties for the structure (empty by default).
+    """
     name: str = "rdKit Generation"
     method: Literal["ETDG", "ETKDG", "ETKDGv2", "ETKDGv3", "KDG", "srETKDGv3"] = (
         "ETKDGv3"
@@ -289,6 +431,61 @@ class RDKitGeneration(StructureGeneration):
 
 @dataclass
 class aISSDocking(StructureGeneration):
+    """
+    Job for automated aISS docking using xTB.
+
+    Attributes
+    ----------
+    name : str
+        Name of the job.
+    executable : str
+        Executable to use (default: xtb).
+    pocket : bool
+        Whether to use pocket mode.
+    no_stack : bool
+        Disable stacking.
+    no_angular : bool
+        Disable angular search.
+    fast : bool
+        Enable fast mode.
+    ATM : bool
+        Enable ATM corrections.
+    stepr : float
+        Step size for translation.
+    stepa : float
+        Step size for rotation.
+    maxgen : int
+        Maximum number of generations.
+    maxparent : int
+        Maximum number of parent structures.
+    nstack : int
+        Number of stack structures.
+    nfinal : int
+        Number of final structures.
+    ensemble : bool
+        Use ensemble docking.
+    etemp : float
+        Ensemble temperature.
+    iterations : int
+        Number of iterations.
+    acc : float
+        Acceptance ratio.
+    opt : Literal
+        Optimization level.
+    cycles : int
+        Number of optimization cycles.
+    optlevel : Literal
+        Optimization level for GFN.
+    alpb : Literal
+        ALPB solvation model.
+    gbsa : Literal
+        GBSA solvation model.
+
+    Methods
+    -------
+    make(structure_1, structure_2)
+        Perform aISS docking between two structures.
+    """
     name: str = "aISS Docking"
     executable: str = "xtb"
     pocket: bool = False

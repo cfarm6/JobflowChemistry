@@ -12,12 +12,25 @@ import json
 
 @dataclass
 class ConceptualDFTProperties(PropertyCalculator):
+    """
+    Base class for conceptual DFT property calculations.
+
+    Provides an interface for conceptual DFT calculations on molecular structures.
+    """
     name: str = "Conceptual DFT Properties"
     pass
 
 
 @dataclass
 class CalculateGlobalConceptualDFTProperties(ConceptualDFTProperties):
+    """
+    Job for calculating global conceptual DFT properties.
+
+    Methods
+    -------
+    make(properties_neutral, properties_cation, properties_anion)
+        Compute global conceptual DFT properties from neutral, cation, and anion properties.
+    """
     name: str = "Calculate Global CDFT Properties"
 
     @job(files="files", settings="settings", properties="properties")

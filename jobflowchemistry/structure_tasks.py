@@ -9,6 +9,18 @@ import pickle
 
 @dataclass
 class StructureOperation(Maker):
+    """
+    Base class for structure operations in workflows.
+
+    Provides an interface for operations on molecular structures, including a job for execution.
+
+    Methods
+    -------
+    operation(molecule)
+        Abstract method for performing an operation on a molecule.
+    make(molecule)
+        Job for executing the operation and returning results as a Response.
+    """
     name: str = "Structure Operation"
 
     def operation(self, molecule):
