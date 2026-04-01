@@ -413,9 +413,10 @@ class RDKitGeneration(StructureGeneration):
             if key == "name" or key == "method" or value is None or key not in params.__dict__:
                 continue
             setattr(params, key, value)
-        ret = rdDistGeom.EmbedMultipleConfs(structure, 1, params)
+        mol = rdchem.Mol(structure)
+        ret = rdDistGeom.EmbedMultipleConfs(mol, 1, params)
         print("ConfIds", ret)
-        return structure
+        return Structure(mol)
 
     def settings(self):
         d = {}
